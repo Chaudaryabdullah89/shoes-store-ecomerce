@@ -50,7 +50,9 @@ const Navbar = () => {
     }`}>
       {/* Logo */}
       <div className='max-w-[130px]'>
+        <Link to='/' >
         <img src="https://gwath-store-newdemo.myshopify.com/cdn/shop/files/gwath_black.png?v=1748331890" alt="" />
+        </Link>
       </div>
 
       {/* Desktop Navigation */}
