@@ -9,13 +9,31 @@ export const cartService = {
 
   // Add item to cart
   addToCart: async (productId, quantity = 1, color = null, size = null) => {
-    const response = await api.post('/cart/items', {
-      productId,
-      quantity,
-      color,
-      size
-    });
-    return response.data;
+    console.log('cartService.addToCart called with:', { productId, quantity, color, size });
+    console.log('Token available:', !!localStorage.getItem('token'));
+    console.log('ProductId type:', typeof productId);
+    console.log('ProductId value:', productId);
+    
+    try {
+      const requestBody = {
+        productId,
+        quantity,
+        color,
+        size
+      };
+      console.log('Request body being sent:', requestBody);
+      
+      const response = await api.post('/cart/items', requestBody);
+      console.log('cartService.addToCart response:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('cartService.addToCart error:', error.response?.data || error.message);
+      console.error('Full error object:', error);
+      console.error('Error response data:', error.response?.data);
+      console.error('Error response status:', error.response?.status);
+      console.error('Error response headers:', error.response?.headers);
+      throw error;
+    }
   },
 
   // Update item quantity

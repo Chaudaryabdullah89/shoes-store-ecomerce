@@ -1,21 +1,9 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useAuth } from './useAuth';
 import { cartService } from '../services/cartService';
+import { toast } from 'react-hot-toast';
 
 const CartContext = createContext();
-
-export { CartContext };
-
-// Custom hook to use cart context
-export const useCart = () => {
-  const context = useContext(CartContext);
-  console.log('useCart called, context:', context); // Debug log
-  if (!context) {
-    console.error('useCart must be used within a CartProvider'); // Debug log
-    throw new Error('useCart must be used within a CartProvider');
-  }
-  return context;
-};
 
 export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
@@ -23,214 +11,205 @@ export const CartProvider = ({ children }) => {
   const [error, setError] = useState(null);
   const { user } = useAuth();
 
-  // Load cart from backend when user logs in
+  // Load cart from localStorage on mount
   useEffect(() => {
-    if (user) {
-      // When user logs in, sync local cart to server first, then load from server
-      syncLocalCartToServer().then(() => {
-        loadCartFromServer();
-      });
-    } else {
-      // Clear cart when user logs out
-      setCart([]);
-    }
-  }, [user]);
-
-  // Initialize local cart from localStorage when app starts
-  useEffect(() => {
-    if (!user) {
-      const localCart = JSON.parse(localStorage.getItem('localCart') || '[]');
-      setCart(localCart);
+    const savedCart = localStorage.getItem('cart');
+    if (savedCart) {
+      try {
+        setCart(JSON.parse(savedCart));
+      } catch (error) {
+        console.error('Error loading cart from localStorage:', error);
+        localStorage.removeItem('cart');
+      }
     }
   }, []);
 
-  // Load cart from server
-  const loadCartFromServer = async () => {
-    if (!user) return;
-    
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await cartService.getCart();
-      if (response.success) {
-        setCart(response.cart.items || []);
-      }
-    } catch (err) {
-      console.error('Error loading cart:', err);
-      setError('Failed to load cart');
-    } finally {
-      setLoading(false);
+  // Save cart to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('cart', JSON.stringify(cart));
+  }, [cart]);
+
+  // Sync cart with server when user logs in
+  useEffect(() => {
+    if (user && cart.length > 0) {
+      syncCartToServer();
     }
-  };
+  }, [user]);
 
   // Add item to cart
   const addToCart = async (product, quantity = 1, color = null, size = null) => {
-    if (!user) {
-      // If not logged in, add to local storage
-      addToLocalCart(product, quantity, color, size);
-      return;
-    }
-
-    setLoading(true);
-    setError(null);
+    console.log('Adding to cart:', { product, quantity, color, size });
+    
     try {
-      const response = await cartService.addToCart(
-        product._id || product.id,
-        quantity,
-        color,
-        size
-      );
-      if (response.success) {
-        setCart(response.cart.items || []);
+      // Ensure we have a valid product ID
+      const productId = product._id || product.id;
+      if (!productId) {
+        console.error('No valid product ID found:', product);
+        toast.error('Invalid product data');
+        return;
       }
-    } catch (err) {
-      console.error('Error adding to cart:', err);
-      setError('Failed to add item to cart');
-    } finally {
-      setLoading(false);
-    }
-  };
 
-  // Add to local cart (when user is not logged in)
-  const addToLocalCart = (product, quantity = 1, color = null, size = null) => {
-    const existingItemIndex = cart.findIndex(item => 
-      item.product === (product._id || product.id) &&
-      item.color === color &&
-      item.size === size
-    );
-
-    let updatedCart;
-    if (existingItemIndex > -1) {
-      updatedCart = [...cart];
-      updatedCart[existingItemIndex].quantity += quantity;
-    } else {
-      const newItem = {
-        _id: Date.now().toString(), // Temporary ID for local cart
-        product: product._id || product.id,
+      const cartItem = {
+        id: productId,
         name: product.name,
-        price: product.price,
+        price: product.price || product.currentPrice || 0,
+        image: product.images?.[0]?.url || product.image || '',
         quantity: quantity,
         color: color,
         size: size,
-        image: product.images?.[0]?.url || product.image || '',
-        sku: product.sku,
-        inStock: product.stock > 0,
         maxQuantity: Math.min(product.stock || 10, 10)
       };
-      updatedCart = [...cart, newItem];
+
+      console.log('Cart item to add:', cartItem);
+
+      setCart(prevCart => {
+        console.log('Previous cart:', prevCart);
+        
+        const existingItemIndex = prevCart.findIndex(item => 
+          item.id === cartItem.id && 
+          item.color === cartItem.color && 
+          item.size === cartItem.size
+        );
+
+        if (existingItemIndex > -1) {
+          // Update existing item
+          const updatedCart = [...prevCart];
+          updatedCart[existingItemIndex].quantity += quantity;
+          if (updatedCart[existingItemIndex].quantity > updatedCart[existingItemIndex].maxQuantity) {
+            updatedCart[existingItemIndex].quantity = updatedCart[existingItemIndex].maxQuantity;
+          }
+          console.log('Updated existing item, new cart:', updatedCart);
+          return updatedCart;
+        } else {
+          // Add new item
+          const newCart = [...prevCart, cartItem];
+          console.log('Added new item, new cart:', newCart);
+          return newCart;
+        }
+      });
+
+      toast.success('Added to cart!');
+
+      // If user is logged in, sync to server
+      if (user) {
+        try {
+          console.log('User is logged in, syncing to server');
+          console.log('User data:', user);
+          console.log('Token available:', !!localStorage.getItem('token'));
+          
+          console.log('Syncing to server with productId:', productId);
+          
+          // Validate productId before sending
+          if (!productId || productId === 'undefined' || productId === 'null') {
+            console.error('Invalid productId:', productId);
+            toast.error('Invalid product data');
+            return;
+          }
+          
+          await cartService.addToCart(productId, quantity, color, size);
+        } catch (error) {
+          console.error('Failed to sync to server:', error);
+          toast.error('Added to local cart. Please check your connection.');
+        }
+      } else {
+        console.log('User not logged in, only adding to local cart');
+      }
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      toast.error('Failed to add item to cart');
     }
-    
-    setCart(updatedCart);
-    // Save to localStorage
-    localStorage.setItem('localCart', JSON.stringify(updatedCart));
   };
 
   // Update item quantity
-  const updateItemQuantity = async (itemId, quantity) => {
-    if (!user) {
-      // Update local cart
-      const updatedCart = cart.map(item => 
-        item._id === itemId 
-          ? { ...item, quantity: Math.max(1, Math.min(quantity, item.maxQuantity || 10)) }
+  const updateItemQuantity = async (itemId, newQuantity) => {
+    setCart(prevCart => 
+      prevCart.map(item => 
+        item.id === itemId 
+          ? { ...item, quantity: Math.max(1, Math.min(newQuantity, item.maxQuantity)) }
           : item
-      );
-      setCart(updatedCart);
-      localStorage.setItem('localCart', JSON.stringify(updatedCart));
-      return;
-    }
+      )
+    );
 
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await cartService.updateItemQuantity(itemId, quantity);
-      if (response.success) {
-        setCart(response.cart.items || []);
+    // If user is logged in, sync to server
+    if (user) {
+      try {
+        await cartService.updateItemQuantity(itemId, newQuantity);
+      } catch (error) {
+        console.error('Failed to sync quantity to server:', error);
       }
-    } catch (err) {
-      console.error('Error updating cart item:', err);
-      setError('Failed to update cart item');
-    } finally {
-      setLoading(false);
     }
   };
 
   // Remove item from cart
   const removeFromCart = async (itemId) => {
-    if (!user) {
-      // Remove from local cart
-      const updatedCart = cart.filter(item => item._id !== itemId);
-      setCart(updatedCart);
-      localStorage.setItem('localCart', JSON.stringify(updatedCart));
-      return;
-    }
+    setCart(prevCart => prevCart.filter(item => item.id !== itemId));
 
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await cartService.removeFromCart(itemId);
-      if (response.success) {
-        setCart(response.cart.items || []);
+    // If user is logged in, sync to server
+    if (user) {
+      try {
+        await cartService.removeFromCart(itemId);
+      } catch (error) {
+        console.error('Failed to sync removal to server:', error);
       }
-    } catch (err) {
-      console.error('Error removing cart item:', err);
-      setError('Failed to remove item from cart');
-    } finally {
-      setLoading(false);
     }
   };
 
   // Clear cart
   const clearCart = async () => {
-    if (!user) {
-      setCart([]);
-      localStorage.removeItem('localCart');
-      return;
+    setCart([]);
+
+    // If user is logged in, sync to server
+    if (user) {
+      try {
+        await cartService.clearCart();
+      } catch (error) {
+        console.error('Failed to sync clear cart to server:', error);
+      }
     }
+  };
+
+  // Sync local cart to server
+  const syncCartToServer = async () => {
+    if (!user) return;
 
     setLoading(true);
-    setError(null);
     try {
-      const response = await cartService.clearCart();
-      if (response.success) {
-        setCart([]);
+      // Clear server cart first
+      await cartService.clearCart();
+      
+      // Add each local item to server
+      for (const item of cart) {
+        await cartService.addToCart(item.id, item.quantity, item.color, item.size);
       }
-    } catch (err) {
-      console.error('Error clearing cart:', err);
-      setError('Failed to clear cart');
+    } catch (error) {
+      console.error('Failed to sync cart to server:', error);
     } finally {
       setLoading(false);
     }
   };
 
-  // Sync local cart to server when user logs in
-  const syncLocalCartToServer = async () => {
+  // Load cart from server
+  const loadCartFromServer = async () => {
     if (!user) return;
-
-    // Get local cart from localStorage
-    const localCart = JSON.parse(localStorage.getItem('localCart') || '[]');
-    
-    if (localCart.length === 0) return;
 
     setLoading(true);
     try {
-      // Add each local cart item to server
-      for (const item of localCart) {
-        try {
-          await cartService.addToCart(
-            item.product,
-            item.quantity,
-            item.color,
-            item.size
-          );
-        } catch (err) {
-          console.error('Error syncing cart item:', err);
-        }
+      const response = await cartService.getCart();
+      if (response.success && response.cart?.items) {
+        const serverCart = response.cart.items.map(item => ({
+          id: item.product,
+          name: item.name,
+          price: item.price,
+          image: item.image,
+          quantity: item.quantity,
+          color: item.color,
+          size: item.size,
+          maxQuantity: item.maxQuantity || 10
+        }));
+        setCart(serverCart);
       }
-      // Clear local cart after successful sync
-      localStorage.removeItem('localCart');
-    } catch (err) {
-      console.error('Error syncing cart:', err);
-      setError('Failed to sync cart');
+    } catch (error) {
+      console.error('Failed to load cart from server:', error);
     } finally {
       setLoading(false);
     }
@@ -264,10 +243,10 @@ export const CartProvider = ({ children }) => {
     updateItemQuantity,
     removeFromCart,
     clearCart,
-    syncLocalCartToServer,
+    syncCartToServer,
+    loadCartFromServer,
     getCartTotals,
-    getCartCount,
-    loadCartFromServer
+    getCartCount
   };
 
   return (
@@ -275,4 +254,12 @@ export const CartProvider = ({ children }) => {
       {children}
     </CartContext.Provider>
   );
+};
+
+export const useCart = () => {
+  const context = useContext(CartContext);
+  if (!context) {
+    throw new Error('useCart must be used within a CartProvider');
+  }
+  return context;
 }; 

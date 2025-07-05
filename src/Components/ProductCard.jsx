@@ -240,15 +240,21 @@ const ProductCard = ({ product, addToWishlist, addToCart, setQuickViewProduct, s
                     toast.error('Please select a color and size.');
                     return;
                   }
-                  if (typeof addToCart === "function") addToCart({
+                  
+                  const productToAdd = {
                     ...product,
-                    id: product.id || product._id,
+                    _id: product._id || product.id,
                     name: product.name,
-                    image: product.image || (Array.isArray(product.images) && product.images[0]?.url) || "https://via.placeholder.com/300x300?text=No+Image",
-                    color: selectedColor?.name || null,
-                    size: selectedSize?.name || selectedSize || null,
-                    currentPrice: product.currentPrice ?? product.price ?? 0
-                  }, quickCartQty, selectedColor?.name || null, selectedSize?.name || selectedSize || null);
+                    price: product.price || product.currentPrice || 0,
+                    image: product.image || (Array.isArray(product.images) && product.images[0]?.url) || "https://via.placeholder.com/300x300?text=No+Image"
+                  };
+                  
+                  addToCart(
+                    productToAdd, 
+                    quickCartQty, 
+                    selectedColor?.name || null, 
+                    selectedSize?.name || selectedSize || null
+                  );
                   setQuickCartOpen(false);
                 }}
               >

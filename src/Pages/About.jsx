@@ -58,7 +58,7 @@ const About = () => {
           </div>
           <div className="relative">
             <img 
-              src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=800&q=80" 
+              src="https://i1.t4s.cz//products/dr2615-007/nike-invincible-3-757880-dr2615-012-960.webp" 
               alt="Luxury watches collection" 
               className="rounded-2xl shadow-2xl w-full h-96 object-cover"
             />
@@ -121,7 +121,7 @@ const About = () => {
         </div>
 
         {/* Team Section */}
-        <div className="mb-20">
+        {/* <div className="mb-20">
           <h2 className="text-4xl font-bold mb-12 text-center text-gray-900">Meet Our Team</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {team.map(member => (
@@ -138,7 +138,7 @@ const About = () => {
               </div>
             ))}
           </div>
-        </div>
+        </div> */}
 
         {/* Gallery Section */}
         <div className="mb-20">
@@ -146,24 +146,24 @@ const About = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <div className="group relative overflow-hidden rounded-2xl">
               <img 
-                src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=600&q=80" 
-                alt="Luxury watches" 
+                src="https://images.unsplash.com/photo-1549298916-b41d501d3772?auto=format&fit=crop&w=600&q=80" 
+                alt="Luxury shoes" 
                 className="w-full h-64 object-cover transition-transform duration-300 group-hover:scale-110"
               />
               <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300"></div>
             </div>
             <div className="group relative overflow-hidden rounded-2xl">
               <img 
-                src="https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=600&q=80" 
-                alt="Classic watches" 
+                src="https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?auto=format&fit=crop&w=600&q=80" 
+                alt="Classic shoes" 
                 className="w-full h-64 object-cover transition-transform duration-300 group-hover:scale-110"
               />
               <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300"></div>
             </div>
             <div className="group relative overflow-hidden rounded-2xl">
               <img 
-                src="https://images.unsplash.com/photo-1434056886845-dac89ffe9b56?auto=format&fit=crop&w=600&q=80" 
-                alt="Sport watches" 
+                src="https://images.unsplash.com/photo-1608231387042-66d1773070a5?auto=format&fit=crop&w=600&q=80" 
+                alt="Sport shoes" 
                 className="w-full h-64 object-cover transition-transform duration-300 group-hover:scale-110"
               />
               <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300"></div>

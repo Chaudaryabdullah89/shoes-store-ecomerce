@@ -72,36 +72,43 @@ const CartDrawer = () => {
         {!Array.isArray(cart) || cart.length === 0 ? (
           <p className="text-gray-500 text-center mt-8 text-sm sm:text-base">Your cart is empty.</p>
         ) : (
-          cart.map((item) => (
-            <div key={item._id} className="flex gap-3 sm:gap-4 py-4 sm:py-6 border-b">
-              <img src={item.image} alt={item.name} className="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded" />
-              <div className="flex-1 min-w-0">
-                <div className="font-semibold text-sm sm:text-base truncate">{item.name}</div>
-                <div className="text-black font-bold text-sm sm:text-base">${item.price.toFixed(2)}</div>
-                <div className="text-xs text-gray-500 mt-1">
-                  {item.color && <span>Color: <span className="font-semibold text-gray-700">{item.color}</span></span>}
-                  {item.size && <span className="ml-2">Size: <span className="font-semibold text-gray-700">{item.size}</span></span>}
-                </div>
-                <div className="flex items-center mt-2">
+          cart.map((item) => {
+            // Ensure price is a number and has a fallback
+            const itemPrice = typeof item.price === 'number' ? item.price : 0;
+            const itemName = item.name || 'Product';
+            const itemImage = item.image || 'https://via.placeholder.com/80x80?text=No+Image';
+            
+            return (
+              <div key={item._id} className="flex gap-3 sm:gap-4 py-4 sm:py-6 border-b">
+                <img src={itemImage} alt={itemName} className="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded" />
+                <div className="flex-1 min-w-0">
+                  <div className="font-semibold text-sm sm:text-base truncate">{itemName}</div>
+                  <div className="text-black font-bold text-sm sm:text-base">${itemPrice.toFixed(2)}</div>
+                  <div className="text-xs text-gray-500 mt-1">
+                    {item.color && <span>Color: <span className="font-semibold text-gray-700">{item.color}</span></span>}
+                    {item.size && <span className="ml-2">Size: <span className="font-semibold text-gray-700">{item.size}</span></span>}
+                  </div>
+                  <div className="flex items-center mt-2">
+                    <button
+                      className="w-6 h-6 sm:w-8 sm:h-8 border border-gray-300 rounded flex items-center justify-center text-lg sm:text-xl"
+                      onClick={() => updateItemQuantity(item._id, Math.max(1, (item.quantity || 1) - 1))}
+                    >-</button>
+                    <span className="w-6 sm:w-8 text-center text-sm sm:text-base">{item.quantity || 1}</span>
+                    <button
+                      className="w-6 h-6 sm:w-8 sm:h-8 border border-gray-300 rounded flex items-center justify-center text-lg sm:text-xl"
+                      onClick={() => updateItemQuantity(item._id, (item.quantity || 1) + 1)}
+                    >+</button>
+                  </div>
                   <button
-                    className="w-6 h-6 sm:w-8 sm:h-8 border border-gray-300 rounded flex items-center justify-center text-lg sm:text-xl"
-                    onClick={() => updateItemQuantity(item._id, Math.max(1, item.quantity - 1))}
-                  >-</button>
-                  <span className="w-6 sm:w-8 text-center text-sm sm:text-base">{item.quantity}</span>
-                  <button
-                    className="w-6 h-6 sm:w-8 sm:h-8 border border-gray-300 rounded flex items-center justify-center text-lg sm:text-xl"
-                    onClick={() => updateItemQuantity(item._id, item.quantity + 1)}
-                  >+</button>
+                    className="text-xs text-gray-400 underline mt-2"
+                    onClick={() => removeFromCart(item._id)}
+                  >
+                    Remove
+                  </button>
                 </div>
-                <button
-                  className="text-xs text-gray-400 underline mt-2"
-                  onClick={() => removeFromCart(item._id)}
-                >
-                  Remove
-                </button>
               </div>
-            </div>
-          ))
+            );
+          })
         )}
       </div>
 
@@ -126,7 +133,7 @@ const CartDrawer = () => {
       <div className="px-4 sm:px-6 py-4">
         <div className="flex justify-between font-bold text-base sm:text-lg mb-2">
           <span>Total</span>
-          <span>${totals.total.toFixed(2)}</span>
+          <span>${(totals.total || 0).toFixed(2)}</span>
         </div>
         <div className="text-xs text-gray-500 mb-4">
           Taxes and <span className="underline cursor-pointer">shipping</span> calculated at checkout
