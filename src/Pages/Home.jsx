@@ -62,7 +62,7 @@ const Home = () => {
           <SwiperSlide>
             <div className="relative w-full h-full">
               <img
-                src="https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2560&q=80"
+                src="https://cdn.runrepeat.com/storage/gallery/buying_guide_primary/1445/best-cheap-nike-basketball-shoes-16425317-main.jpg"
                 alt="Hero shoes collection"
                 className="w-full h-full object-cover"
               />
@@ -101,7 +101,7 @@ const Home = () => {
           <SwiperSlide>
             <div className="relative w-full h-full">
               <img
-                src="https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1280&q=80"
+                src="https://images.cdn.inspogroup.net/eBa3Vom5MJ3LqiTNtRTpSgSVCMwXpe9Vx0b3B-SRJAo/aHR0c/DovL2/1hZ2F6aW5lZW51cy53cGVuZ2luZS5jb20vd3AtY29udGVudC91cGxvYWRzLzIwMjEvMDMvUlpfSE9SX0dldHR5SW1hZ2VzLTEzNjUzNzQyNzkuanBn"
                 alt="Style your shoes"
                 className="w-full h-full object-cover"
               />
@@ -359,17 +359,17 @@ const Home = () => {
       <div className="flex flex-col lg:flex-row max-w-7xl my-12 sm:my-16 md:my-20 mx-auto gap-6 lg:gap-8 px-4">
 
           <div className="w-full lg:w-1/2">
-  <img src="https://gwath-store-newdemo.myshopify.com/cdn/shop/files/banner1_1.jpg?v=1748483509&width=1883" alt="" className="w-full h-auto" />
+  <img src="https://5.imimg.com/data5/SELLER/Default/2023/4/302623436/GL/AU/MY/139842122/nike-guide-10-shoe.jpeghttps://cdn.vibecity.in/providers/640a0459db4ffe001103456c/1000160527_7125d805-8251-410c-8a33-e8f0962af3e9-3X.png" alt="" className="w-full h-auto" />
           </div>
           <div className="flex flex-col items-start justify-center w-full lg:w-1/2">
   <h2 className="text-xs sm:text-sm font-semibold text-gray-600 uppercase tracking-wider mb-2">New Arrivals</h2>
   <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-4 leading-tight">
-    Heures Créatives<br />
-    Romantique.
+    Premium Footwear<br />
+    Collection.
   </h1>
   <p className="text-sm sm:text-base md:text-lg text-gray-600 mb-6 leading-relaxed max-w-md">
-    Inspired by a piece from 1916 created during the
-    Belle Époque and Art Nouveau period
+    Discover our latest collection of premium shoes crafted with 
+    innovative design and superior comfort for every occasion
   </p>
   <div className="bg-[#ba7a2d] text-white px-8 py-3 rounded-sm transition-colors overflow-hidden relative group h-12 w-fit">
                     <div className="flex flex-col transition-transform gap-4 duration-300 group-hover:-translate-y-[40px] h-full">
