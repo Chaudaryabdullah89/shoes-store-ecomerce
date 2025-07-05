@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://shoes-backend-2352.vercel.app/api';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -101,7 +101,7 @@ const Register = () => {
 
     try {
       // Connect to backend API for registration
-      await axios.post('http://localhost:5000/api/auth/register', {
+      await axios.post('https://shoes-backend-2352.vercel.app/api/auth/register', {
         name: formData.firstName + ' ' + formData.lastName,
         email: formData.email,
         password: formData.password,

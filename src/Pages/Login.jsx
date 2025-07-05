@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../Context/useAuth';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1';
+const API_URL = import.meta.env.VITE_API_URL || 'https://shoes-backend-2352.vercel.app/api';
 
 const Login = () => {
   const navigate = useNavigate();
