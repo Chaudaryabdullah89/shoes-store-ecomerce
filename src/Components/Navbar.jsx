@@ -60,7 +60,7 @@ const Navbar = () => {
             <Link to="/youraccount" className="font-semibold mr-4">Profile</Link>
             <Link to="/orders" className="font-semibold mr-4">My Orders</Link>
             {user.role === 'admin' && (
-              <Link to="/admin/dashboard" className="font-semibold mr-4 bg-[#ba7a2d] text-white px-3 py-1 rounded-sm hover:bg-[#a06a25] transition-colors">
+              <Link to="/admin/login" className="font-semibold mr-4 bg-[#ba7a2d] text-white px-3 py-1 rounded-sm hover:bg-[#a06a25] transition-colors">
                 Dashboard
               </Link>
             )}
