@@ -1,7 +1,7 @@
 import api from './api';
 
 export const cartService = {
-  // Get user cart
+  // Get user's cart
   getCart: async () => {
     const response = await api.get('/cart');
     return response.data;
@@ -18,9 +18,11 @@ export const cartService = {
     return response.data;
   },
 
-  // Update cart item quantity
-  updateCartItem: async (itemId, quantity) => {
-    const response = await api.put(`/cart/items/${itemId}`, { quantity });
+  // Update item quantity
+  updateItemQuantity: async (itemId, quantity) => {
+    const response = await api.put(`/cart/items/${itemId}`, {
+      quantity
+    });
     return response.data;
   },
 
@@ -37,8 +39,10 @@ export const cartService = {
   },
 
   // Apply coupon
-  applyCoupon: async (code) => {
-    const response = await api.post('/cart/coupon', { code });
+  applyCoupon: async (couponCode) => {
+    const response = await api.post('/cart/coupon', {
+      code: couponCode
+    });
     return response.data;
   },
 
@@ -53,4 +57,6 @@ export const cartService = {
     const response = await api.put('/cart/shipping', address);
     return response.data;
   }
-}; 
+};
+
+export default cartService; 
