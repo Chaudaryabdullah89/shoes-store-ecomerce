@@ -286,8 +286,13 @@ const Product = () => {
           )}
           {/* Description */}
           {product?.description && (
-            <div className="text-gray-500 text-sm sm:text-base mt-2 whitespace-pre-line line-clamp-3">
-              {product.description.split('\n').slice(0, 2).join('\n')}
+            <div className="text-gray-500 text-sm sm:text-base mt-2 line-clamp-3">
+              <div 
+                className="text-gray-500 text-sm sm:text-base"
+                dangerouslySetInnerHTML={{ 
+                  __html: product.description.replace(/<[^>]*>/g, '').split('\n').slice(0, 2).join('\n') 
+                }}
+              />
             </div>
           )}
           {/* Stock indicator */}
@@ -381,9 +386,10 @@ const Product = () => {
           <div className="space-y-5 sm:space-y-7">
             <div>
               <h3 className="text-lg sm:text-xl font-semibold mb-2 sm:mb-3 text-gray-900">Product Details</h3>
-              <p className="text-gray-700 text-sm sm:text-base mb-2 whitespace-pre-line">
-                {product?.description}
-              </p>
+              <div 
+                className="text-gray-700 text-sm sm:text-base mb-2"
+                dangerouslySetInnerHTML={{ __html: product?.description }}
+              />
             </div>
             {Array.isArray(product?.features) && product.features.length > 0 && (
               <div>

@@ -37,9 +37,17 @@ const Wishlist = () => {
               <div key={item.id || item._id} className="bg-white border border-gray-200 rounded-lg p-4">
                 <div className="flex items-start gap-3 sm:gap-4">
                   <img 
-                    src={item.image && item.image && item.image ? item.image : "https://via.placeholder.com/300x300?text=No+Image"} 
+                    src={
+                      (Array.isArray(item.image) && item.image) ||
+                      item.image ||
+                      "https://via.placeholder.com/300x300?text=No+Image"
+                    }
                     alt={item.name || "Product"} 
-                    className="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded" 
+                    className="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded"
+                    onError={e => {
+                      e.target.onerror = null;
+                      e.target.src = "https://via.placeholder.com/300x300?text=No+Image";
+                    }}
                   />
                   <div className="flex-1 min-w-0">
                     <h3 className="font-semibold text-sm sm:text-base truncate mb-2">{item.name || "Unnamed Product"}</h3>

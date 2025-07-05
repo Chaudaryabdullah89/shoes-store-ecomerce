@@ -30,7 +30,7 @@ const ProductCard = ({ product, addToWishlist, addToCart, setQuickViewProduct, s
     <div key={productId} className="relative bg-gray-100 rounded-lg shadow-md flex flex-col items-center p-3 sm:p-4 md:p-6 group overflow-hidden">
       {/* Sale Ribbon */}
       {product.isOnSale && (
-        <div className="absolute top-0 right-0 bg-red-500 text-white text-xs px-2 py-1 rounded-bl-lg font-semibold">Sale</div>
+        <div className="absolute top-0 z-10 right-0 bg-red-500 text-white text-xs px-2 py-1 rounded-bl-lg font-semibold">Sale</div>
       )}
       {/* Product Image */}
       <Link
