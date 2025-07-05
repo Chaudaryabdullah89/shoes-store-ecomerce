@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import AdminLayout from '../Admin/components/AdminLayout';
+import AdminLayout from './components/AdminLayout';
 import { userService } from '../services/userService';
 import { useNavigate } from 'react-router-dom';
 
