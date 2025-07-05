@@ -391,124 +391,126 @@ const Home = () => {
           </div>
       </div>
 
-<section className="max-w-7xl mx-auto my-8 sm:my-12 md:my-16 lg:my-20 px-4 sm:px-6">
-  <div className="text-center mb-6 sm:mb-8 md:mb-10 lg:mb-12">
-    <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-3 sm:mb-4">Latest News & Articles</h1>
-    <p className="text-xs sm:text-sm md:text-base lg:text-lg text-gray-600 max-w-2xl mx-auto">
-      Discover the latest trends, watch care tips, and industry insights from our expert team
-    </p>
-  </div>
+{Array.isArray(blogPosts) && blogPosts.length > 0 && (
+  <section className="max-w-7xl mx-auto my-8 sm:my-12 md:my-16 lg:my-20 px-4 sm:px-6">
+    <div className="text-center mb-6 sm:mb-8 md:mb-10 lg:mb-12">
+      <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-3 sm:mb-4">Latest News & Articles</h1>
+      <p className="text-xs sm:text-sm md:text-base lg:text-lg text-gray-600 max-w-2xl mx-auto">
+        Discover the latest trends, watch care tips, and industry insights from our expert team
+      </p>
+    </div>
 
-  {/* Desktop Grid */}
-  <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
-    {Array.isArray(blogPosts) && blogPosts.slice(0, 3).map((post) => (
-      <article
-        key={post.id}
-        className="rounded-lg bg-white overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col h-full w-full transform hover:-translate-y-1"
-      >
-        <div className="relative w-full h-48 sm:h-52 lg:h-56 overflow-hidden">
-          <img
-            src={post.image.url}
-            alt={post.title}
-            className="w-full h-full object-cover object-center transition-transform duration-300 hover:scale-105"
-          />
-          {post.featured && (
-            <div className="absolute top-2 left-2 bg-yellow-400 text-yellow-900 px-2 py-1 rounded-full text-xs font-bold">
-              ⭐ Featured
-            </div>
-          )}
-        </div>
-        <div className="p-4 sm:p-5 lg:p-6 flex flex-col flex-1">
-          <div className="flex items-center text-xs sm:text-sm text-gray-500 mb-2 sm:mb-3">
-            <span>📅 {new Date(post.createdAt).toLocaleDateString()}</span>
-            <span className="mx-2">•</span>
-            <span>📝 {post.status}</span>
-          </div>
-          <h3 className="text-base sm:text-lg lg:text-xl font-semibold text-gray-900 mb-2 sm:mb-3 hover:text-[#ba7a2d] transition-colors line-clamp-2">
-            {post.title}
-          </h3>
-          <p className="text-xs sm:text-sm lg:text-base text-gray-600 mb-3 sm:mb-4 line-clamp-3 flex-grow">
-            {post.content}
-          </p>
-          <div className="mt-auto">
-            <Link
-              to={`/blog/${post.id}`}
-              className="inline-flex items-center text-[#ba7a2d] font-semibold font-['Montserrat'] transition-colors hover:text-[#a06a25] text-xs sm:text-sm"
-            >
-              Read More 
-              <svg className="w-3 h-3 sm:w-4 sm:h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </Link>
-          </div>
-        </div>
-      </article>
-    ))}
-  </div>
-
-  {/* Mobile Swiper */}
-  <div className="sm:hidden">
-    <Swiper
-      slidesPerView={1.2}
-      spaceBetween={12}
-      className="blog-swiper"
-    >
-      {Array.isArray(blogPosts) && blogPosts.slice(0, 3).map((post) => (
-        <SwiperSlide key={post.id}>
-          <article
-            className="rounded-lg bg-white overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 flex flex-col h-full w-full"
-          >
-            <div className="relative w-full h-40 overflow-hidden">
-              <img
-                src={post.image.url}
-                alt={post.title}
-                className="w-full h-full object-cover object-center transition-transform duration-300 hover:scale-105"
-              />
-              {post.featured && (
-                <div className="absolute top-2 left-2 bg-yellow-400 text-yellow-900 px-2 py-0.5 rounded-full text-xs font-bold">
-                  ⭐ Featured
-                </div>
-              )}
-            </div>
-            <div className="p-3 sm:p-4 flex flex-col flex-1">
-              <div className="flex items-center text-xs text-gray-500 mb-2">
-                <span>📅 {new Date(post.createdAt).toLocaleDateString()}</span>
-                <span className="mx-1">•</span>
-                <span>📝 {post.status}</span>
+    {/* Desktop Grid */}
+    <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+      {blogPosts.slice(0, 3).map((post) => (
+        <article
+          key={post.id}
+          className="rounded-lg bg-white overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col h-full w-full transform hover:-translate-y-1"
+        >
+          <div className="relative w-full h-48 sm:h-52 lg:h-56 overflow-hidden">
+            <img
+              src={post.image.url}
+              alt={post.title}
+              className="w-full h-full object-cover object-center transition-transform duration-300 hover:scale-105"
+            />
+            {post.featured && (
+              <div className="absolute top-2 left-2 bg-yellow-400 text-yellow-900 px-2 py-1 rounded-full text-xs font-bold">
+                ⭐ Featured
               </div>
-              <h3 className="text-sm sm:text-base font-semibold text-gray-900 mb-2 hover:text-[#ba7a2d] transition-colors line-clamp-2">
-                {post.title}
-              </h3>
-              <p className="text-xs text-gray-600 mb-3 line-clamp-2 flex-grow">
-                {post.content}
-              </p>
-              <div className="mt-auto">
-                <Link
-                  to={`/blog/${post.id}`}
-                  className="inline-flex items-center text-[#ba7a2d] font-semibold font-['Montserrat'] transition-colors hover:text-[#a06a25] text-xs"
-                >
-                  Read More 
-                  <svg className="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </Link>
-              </div>
+            )}
+          </div>
+          <div className="p-4 sm:p-5 lg:p-6 flex flex-col flex-1">
+            <div className="flex items-center text-xs sm:text-sm text-gray-500 mb-2 sm:mb-3">
+              <span>📅 {new Date(post.createdAt).toLocaleDateString()}</span>
+              <span className="mx-2">•</span>
+              <span>📝 {post.status}</span>
             </div>
-          </article>
-        </SwiperSlide>
+            <h3 className="text-base sm:text-lg lg:text-xl font-semibold text-gray-900 mb-2 sm:mb-3 hover:text-[#ba7a2d] transition-colors line-clamp-2">
+              {post.title}
+            </h3>
+            <p className="text-xs sm:text-sm lg:text-base text-gray-600 mb-3 sm:mb-4 line-clamp-3 flex-grow">
+              {post.content}
+            </p>
+            <div className="mt-auto">
+              <Link
+                to={`/blog/${post.id}`}
+                className="inline-flex items-center text-[#ba7a2d] font-semibold font-['Montserrat'] transition-colors hover:text-[#a06a25] text-xs sm:text-sm"
+              >
+                Read More 
+                <svg className="w-3 h-3 sm:w-4 sm:h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </Link>
+            </div>
+          </div>
+        </article>
       ))}
-    </Swiper>
-  </div>
+    </div>
 
-  <div className="text-center mt-6 sm:mt-8 md:mt-10 lg:mt-12">
-    <Link 
-      to="/blog" 
-      className="bg-[#ba7a2d] text-white px-4 sm:px-6 lg:px-8 py-2 sm:py-3 rounded-sm hover:bg-[#a06a25] transition-colors font-semibold uppercase tracking-wide text-xs sm:text-sm lg:text-base"
-    >
-      View All Articles
-    </Link>
-  </div>
-</section>
+    {/* Mobile Swiper */}
+    <div className="sm:hidden">
+      <Swiper
+        slidesPerView={1.2}
+        spaceBetween={12}
+        className="blog-swiper"
+      >
+        {blogPosts.slice(0, 3).map((post) => (
+          <SwiperSlide key={post.id}>
+            <article
+              className="rounded-lg bg-white overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 flex flex-col h-full w-full"
+            >
+              <div className="relative w-full h-40 overflow-hidden">
+                <img
+                  src={post.image.url}
+                  alt={post.title}
+                  className="w-full h-full object-cover object-center transition-transform duration-300 hover:scale-105"
+                />
+                {post.featured && (
+                  <div className="absolute top-2 left-2 bg-yellow-400 text-yellow-900 px-2 py-0.5 rounded-full text-xs font-bold">
+                    ⭐ Featured
+                  </div>
+                )}
+              </div>
+              <div className="p-3 sm:p-4 flex flex-col flex-1">
+                <div className="flex items-center text-xs text-gray-500 mb-2">
+                  <span>📅 {new Date(post.createdAt).toLocaleDateString()}</span>
+                  <span className="mx-1">•</span>
+                  <span>📝 {post.status}</span>
+                </div>
+                <h3 className="text-sm sm:text-base font-semibold text-gray-900 mb-2 hover:text-[#ba7a2d] transition-colors line-clamp-2">
+                  {post.title}
+                </h3>
+                <p className="text-xs text-gray-600 mb-3 line-clamp-2 flex-grow">
+                  {post.content}
+                </p>
+                <div className="mt-auto">
+                  <Link
+                    to={`/blog/${post.id}`}
+                    className="inline-flex items-center text-[#ba7a2d] font-semibold font-['Montserrat'] transition-colors hover:text-[#a06a25] text-xs"
+                  >
+                    Read More 
+                    <svg className="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </Link>
+                </div>
+              </div>
+            </article>
+          </SwiperSlide>
+        ))}
+      </Swiper>
+    </div>
+
+    <div className="text-center mt-6 sm:mt-8 md:mt-10 lg:mt-12">
+      <Link 
+        to="/blog" 
+        className="bg-[#ba7a2d] text-white px-4 sm:px-6 lg:px-8 py-2 sm:py-3 rounded-sm hover:bg-[#a06a25] transition-colors font-semibold uppercase tracking-wide text-xs sm:text-sm lg:text-base"
+      >
+        View All Articles
+      </Link>
+    </div>
+  </section>
+)}
 
 
 
