@@ -42,6 +42,7 @@ import EditProduct from './admin/EditProduct';
 import EditCustomer from './admin/EditCustomer';
 import AdminEmails from './admin/AdminEmails';
 import AdminOrderDetail from './admin/AdminOrderDetail';
+import AdminProtectedRoute from './admin/components/AdminProtectedRoute';
 
 
 function App() {
@@ -81,18 +82,62 @@ function App() {
         <Route path='/discount' element={<Discount />} />
      
         <Route path="/admin/login" element={<AdminLogin />} />
-        <Route path="/admin/dashboard" element={<AdminDashboard />} />
-        <Route path="/admin/products" element={<AdminProducts />} />
-        <Route path="/admin/orders" element={<AdminOrders />} />
-        <Route path="/admin/orders/number/:orderNumber" element={<AdminOrderDetail />} />
+        <Route path="/admin/dashboard" element={
+          <AdminProtectedRoute>
+            <AdminDashboard />
+          </AdminProtectedRoute>
+        } />
+        <Route path="/admin/products" element={
+          <AdminProtectedRoute>
+            <AdminProducts />
+          </AdminProtectedRoute>
+        } />
+        <Route path="/admin/orders" element={
+          <AdminProtectedRoute>
+            <AdminOrders />
+          </AdminProtectedRoute>
+        } />
+        <Route path="/admin/orders/number/:orderNumber" element={
+          <AdminProtectedRoute>
+            <AdminOrderDetail />
+          </AdminProtectedRoute>
+        } />
 
-        <Route path="/admin/customers" element={<AdminCustomers />} />
-        <Route path="/admin/customers/edit/:id" element={<EditCustomer />} />
-        <Route path="/admin/blogs" element={<AdminBlogs />} />
-        <Route path="/admin/settings" element={<AdminSettings />} />
-        <Route path="/admin/products/add" element={<AddProduct />} />
-        <Route path="/admin/products/edit/:id" element={<EditProduct />} />
-        <Route path="/admin/emails" element={<AdminEmails />} />
+        <Route path="/admin/customers" element={
+          <AdminProtectedRoute>
+            <AdminCustomers />
+          </AdminProtectedRoute>
+        } />
+        <Route path="/admin/customers/edit/:id" element={
+          <AdminProtectedRoute>
+            <EditCustomer />
+          </AdminProtectedRoute>
+        } />
+        <Route path="/admin/blogs" element={
+          <AdminProtectedRoute>
+            <AdminBlogs />
+          </AdminProtectedRoute>
+        } />
+        <Route path="/admin/settings" element={
+          <AdminProtectedRoute>
+            <AdminSettings />
+          </AdminProtectedRoute>
+        } />
+        <Route path="/admin/products/add" element={
+          <AdminProtectedRoute>
+            <AddProduct />
+          </AdminProtectedRoute>
+        } />
+        <Route path="/admin/products/edit/:id" element={
+          <AdminProtectedRoute>
+            <EditProduct />
+          </AdminProtectedRoute>
+        } />
+        <Route path="/admin/emails" element={
+          <AdminProtectedRoute>
+            <AdminEmails />
+          </AdminProtectedRoute>
+        } />
       </Routes>
       <CartDrawer />
       <Footer />
