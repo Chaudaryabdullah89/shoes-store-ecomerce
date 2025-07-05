@@ -50,115 +50,163 @@ const AdminDashboard = () => {
 
   return (
     <AdminLayout>
-      <div className="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Dashboard Overview</h1>
-          <p className="text-gray-500">Welcome to your admin dashboard</p>
-        </div>
-        <div className="flex gap-2 flex-wrap">
-          {quickActions.map((action) => (
-            <Link key={action.label} to={action.href} className="flex items-center gap-2 bg-yellow-400 text-white px-4 py-2 rounded font-semibold hover:bg-yellow-500 transition">
-              <span>{action.icon}</span> {action.label}
-            </Link>
-          ))}
+      {/* Header Section */}
+      <div className="mb-6 sm:mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2">Dashboard Overview</h1>
+            <p className="text-gray-600 text-sm sm:text-base">Welcome to your admin dashboard</p>
+          </div>
+          <div className="flex flex-wrap gap-2 sm:gap-3">
+            {quickActions.map((action) => (
+              <Link 
+                key={action.label} 
+                to={action.href} 
+                className="flex items-center gap-2 bg-yellow-500 text-white px-3 sm:px-4 py-2 sm:py-3 rounded-lg font-medium hover:bg-yellow-600 transition-colors text-sm sm:text-base"
+              >
+                <span className="text-lg">{action.icon}</span> 
+                <span className="hidden sm:inline">{action.label}</span>
+                <span className="sm:hidden">{action.label.split(' ')[0]}</span>
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
+
       {loading ? (
         <div className="flex justify-center items-center h-64">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-500"></div>
         </div>
       ) : error ? (
-        <div className="bg-red-100 text-red-700 px-4 py-2 rounded mb-6">{error}</div>
+        <div className="bg-red-100 text-red-700 px-4 py-3 rounded-lg mb-6">{error}</div>
       ) : (
         <>
-          {/* Stat Cards */}
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-6 mb-10">
-            <div className="bg-white rounded-xl shadow p-6 flex flex-col items-center">
-              <div className="text-3xl font-bold text-yellow-700 mb-2">{stats?.orders ?? '-'}</div>
-              <div className="text-gray-600 font-semibold">Total Orders</div>
+          {/* Stats Cards */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-6 mb-6 sm:mb-8">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
+              <div className="text-2xl sm:text-3xl font-bold text-yellow-600 mb-1">{stats?.orders ?? '-'}</div>
+              <div className="text-gray-600 font-medium text-sm">Total Orders</div>
             </div>
-            <div className="bg-white rounded-xl shadow p-6 flex flex-col items-center">
-              <div className="text-3xl font-bold text-yellow-700 mb-2">${stats?.sales?.toLocaleString() ?? '-'}</div>
-              <div className="text-gray-600 font-semibold">Revenue</div>
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
+              <div className="text-2xl sm:text-3xl font-bold text-green-600 mb-1">${stats?.sales?.toLocaleString() ?? '-'}</div>
+              <div className="text-gray-600 font-medium text-sm">Revenue</div>
             </div>
-            <div className="bg-white rounded-xl shadow p-6 flex flex-col items-center">
-              <div className="text-3xl font-bold text-yellow-700 mb-2">{stats?.products ?? '-'}</div>
-              <div className="text-gray-600 font-semibold">Products</div>
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
+              <div className="text-2xl sm:text-3xl font-bold text-blue-600 mb-1">{stats?.products ?? '-'}</div>
+              <div className="text-gray-600 font-medium text-sm">Products</div>
             </div>
-            <div className="bg-white rounded-xl shadow p-6 flex flex-col items-center">
-              <div className="text-3xl font-bold text-yellow-700 mb-2">{stats?.users ?? '-'}</div>
-              <div className="text-gray-600 font-semibold">Customers</div>
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
+              <div className="text-2xl sm:text-3xl font-bold text-purple-600 mb-1">{stats?.users ?? '-'}</div>
+              <div className="text-gray-600 font-medium text-sm">Customers</div>
             </div>
-            <div className="bg-white rounded-xl shadow p-6 flex flex-col items-center">
-              <div className="text-3xl font-bold text-yellow-700 mb-2">{stats?.reviews ?? '-'}</div>
-              <div className="text-gray-600 font-semibold">Reviews</div>
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
+              <div className="text-2xl sm:text-3xl font-bold text-indigo-600 mb-1">{stats?.reviews ?? '-'}</div>
+              <div className="text-gray-600 font-medium text-sm">Reviews</div>
             </div>
-            <div className="bg-white rounded-xl shadow p-6 flex flex-col items-center">
-              <div className="text-3xl font-bold text-yellow-700 mb-2">{stats?.blogs ?? '-'}</div>
-              <div className="text-gray-600 font-semibold">Blogs</div>
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
+              <div className="text-2xl sm:text-3xl font-bold text-pink-600 mb-1">{stats?.blogs ?? '-'}</div>
+              <div className="text-gray-600 font-medium text-sm">Blogs</div>
             </div>
           </div>
+
           {/* Sales Chart Placeholder */}
-          <div className="bg-white rounded-xl shadow p-6 mb-10">
-            <h2 className="text-xl font-bold mb-4">Sales Trends</h2>
-            <div className="h-48 flex items-center justify-center text-gray-400">[Sales Chart Placeholder]</div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Top Products */}
-            <div className="bg-white rounded-xl shadow p-6">
-              <h2 className="text-xl font-bold mb-4">Top Products</h2>
-              <table className="w-full text-left">
-                <thead>
-                  <tr className="text-gray-500 text-xs uppercase">
-                    <th className="font-semibold pb-2">Product</th>
-                    <th className="font-semibold pb-2">Sales</th>
-                    <th className="font-semibold pb-2">Stock</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {topProducts.length === 0 ? (
-                    <tr><td colSpan={3} className="text-gray-400 py-4 text-center">No products</td></tr>
-                  ) : (
-                    topProducts.map((p) => (
-                      <tr key={p._id || p.id || p.name} className="border-b">
-                        <td className="py-2 font-semibold">{p.name}</td>
-                        <td className="py-2">{p.sales ?? '-'}</td>
-                        <td className="py-2">{p.stock ?? '-'}</td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6 mb-6 sm:mb-8">
+            <h2 className="text-lg sm:text-xl font-bold mb-4 text-gray-900">Sales Trends</h2>
+            <div className="h-48 sm:h-64 flex items-center justify-center text-gray-400 bg-gray-50 rounded-lg">
+              <div className="text-center">
+                <div className="text-4xl mb-2">📊</div>
+                <p className="text-sm">Sales Chart Placeholder</p>
+              </div>
             </div>
-            {/* Recent Orders */}
-            <div className="bg-white rounded-xl shadow p-6">
-              <h2 className="text-xl font-bold mb-4">Recent Orders</h2>
-              <table className="w-full text-left">
-                <thead>
-                  <tr className="text-gray-500 text-xs uppercase">
-                    <th className="font-semibold pb-2">Order ID</th>
-                    <th className="font-semibold pb-2">Customer</th>
-                    <th className="font-semibold pb-2">Total</th>
-                    <th className="font-semibold pb-2">Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {recentOrders.length === 0 ? (
-                    <tr><td colSpan={4} className="text-gray-400 py-4 text-center">No orders</td></tr>
-                  ) : (
-                    recentOrders.map((o) => (
-                      <tr key={o._id || o.id} className="border-b">
-                        <td className="py-2 font-semibold">{o._id || o.id}</td>
-                        <td className="py-2">{o.user?.name || o.customer || '-'}</td>
-                        <td className="py-2">${o.totalPrice?.toFixed(2) || o.total || '-'}</td>
-                        <td className="py-2">
-                          <span className={`px-2 py-1 rounded text-xs font-bold ${o.status === 'Delivered' ? 'bg-green-100 text-green-700' : o.status === 'Processing' ? 'bg-yellow-100 text-yellow-700' : 'bg-blue-100 text-blue-700'}`}>{o.status}</span>
-                        </td>
+          </div>
+
+          {/* Tables Section */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
+            {/* Top Products */}
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
+              <h2 className="text-lg sm:text-xl font-bold mb-4 text-gray-900">Top Products</h2>
+              <div className="overflow-x-auto">
+                <table className="w-full text-left">
+                  <thead>
+                    <tr className="text-gray-500 text-xs uppercase border-b border-gray-200">
+                      <th className="font-semibold pb-3 pr-2">Product</th>
+                      <th className="font-semibold pb-3 px-2">Sales</th>
+                      <th className="font-semibold pb-3 pl-2">Stock</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {topProducts.length === 0 ? (
+                      <tr>
+                        <td colSpan={3} className="text-gray-400 py-6 text-center text-sm">No products available</td>
                       </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
+                    ) : (
+                      topProducts.map((p) => (
+                        <tr key={p._id || p.id || p.name} className="border-b border-gray-100 last:border-b-0">
+                          <td className="py-3 pr-2">
+                            <div className="flex items-center space-x-3">
+                              <img 
+                                src={p.images?.[0]?.url || p.images?.[0] || ''} 
+                                alt={p.name}
+                                className="w-8 h-8 object-cover rounded bg-gray-100"
+                              />
+                              <span className="font-medium text-sm truncate">{p.name}</span>
+                            </div>
+                          </td>
+                          <td className="py-3 px-2 text-sm">{p.sales ?? '-'}</td>
+                          <td className="py-3 pl-2 text-sm">{p.stock ?? '-'}</td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Recent Orders */}
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
+              <h2 className="text-lg sm:text-xl font-bold mb-4 text-gray-900">Recent Orders</h2>
+              <div className="overflow-x-auto">
+                <table className="w-full text-left">
+                  <thead>
+                    <tr className="text-gray-500 text-xs uppercase border-b border-gray-200">
+                      <th className="font-semibold pb-3 pr-2">Order ID</th>
+                      <th className="font-semibold pb-3 px-2">Customer</th>
+                      <th className="font-semibold pb-3 px-2">Total</th>
+                      <th className="font-semibold pb-3 pl-2">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {recentOrders.length === 0 ? (
+                      <tr>
+                        <td colSpan={4} className="text-gray-400 py-6 text-center text-sm">No orders available</td>
+                      </tr>
+                    ) : (
+                      recentOrders.map((o) => (
+                        <tr key={o._id || o.id} className="border-b border-gray-100 last:border-b-0">
+                          <td className="py-3 pr-2">
+                            <span className="font-mono text-sm text-gray-600">
+                              {String(o._id || o.id).slice(-8)}
+                            </span>
+                          </td>
+                          <td className="py-3 px-2 text-sm">{o.user?.name || o.customer || '-'}</td>
+                          <td className="py-3 px-2 text-sm font-medium">
+                            ${o.totalPrice?.toFixed(2) || o.total || '-'}
+                          </td>
+                          <td className="py-3 pl-2">
+                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                              o.status === 'Delivered' ? 'bg-green-100 text-green-700' : 
+                              o.status === 'Processing' ? 'bg-yellow-100 text-yellow-700' : 
+                              'bg-blue-100 text-blue-700'
+                            }`}>
+                              {o.status}
+                            </span>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </>
