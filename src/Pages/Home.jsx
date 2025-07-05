@@ -57,37 +57,37 @@ const Home = () => {
         <Swiper
           navigation={true}
           modules={[Navigation]}
-          className="mySwiper h-full relative"
+          className="mySwiper h-[300px] sm:h-[400px] md:h-[500px] lg:h-[600px] xl:h-[700px] relative"
         >
           <SwiperSlide>
-            <div className="relative">
+            <div className="relative w-full h-full">
               <img
                 src="https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2560&q=80"
-                alt=""
+                alt="Hero shoes collection"
                 className="w-full h-full object-cover"
               />
-              <div className="absolute inset-0 flex flex-col justify-center items-start text-white px-4 sm:px-8 md:px-16 lg:px-40">
-                <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-semibold mb-2 md:mb-4 font-['Montserrat'] uppercase">
+              <div className="absolute inset-0 flex flex-col justify-center items-start text-white px-4 sm:px-8 md:px-16 lg:px-40 xl:px-48">
+                <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-semibold mb-2 md:mb-4 font-['Montserrat'] uppercase leading-tight">
                   Find The Perfect
                 </h1>
-                <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-semibold mb-2 md:mb-4 font-['Montserrat'] uppercase ">
+                <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-semibold mb-2 md:mb-4 font-['Montserrat'] uppercase leading-tight">
                   Shoes For You
                 </h1>
-                <p className="text-sm sm:text-base md:text-lg lg:text-xl text-grey-400 font-['Montserrat']">
+                <p className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl text-gray-200 font-['Montserrat'] mb-4 md:mb-6">
                   The Style of shoes available
                 </p>
-                <div className="mt-8">
-                  <div className="bg-[#ba7a2d] text-white px-8 py-3 rounded-sm transition-colors overflow-hidden relative group h-12 w-fit">
-                    <div className="flex flex-col transition-transform gap-4 duration-300 group-hover:-translate-y-[45px] h-full">
+                <div className="mt-6 md:mt-8">
+                  <div className="bg-[#ba7a2d] text-white px-6 md:px-8 py-3 md:py-4 rounded-sm transition-colors overflow-hidden relative group h-12 md:h-14 w-fit hover:bg-[#a06a25]">
+                    <div className="flex flex-col transition-transform gap-4 duration-300 group-hover:-translate-y-[45px] md:group-hover:-translate-y-[52px] h-full">
                       <Link
                         to="/Shop"
-                        className="h-12 flex items-center font-semibold font-['Montserrat'] uppercase "
+                        className="h-12 md:h-14 flex items-center font-semibold font-['Montserrat'] uppercase text-sm md:text-base"
                       >
                         Shop Now
                       </Link>
                       <Link
                         to="/Shop"
-                        className="h-12 flex items-center font-semibold font-['Montserrat'] uppercase"
+                        className="h-12 md:h-14 flex items-center font-semibold font-['Montserrat'] uppercase text-sm md:text-base"
                       >
                         Shop Now
                       </Link>
@@ -99,33 +99,34 @@ const Home = () => {
           </SwiperSlide>
 
           <SwiperSlide>
-            <div className="relative">
+            <div className="relative w-full h-full">
               <img
-                src="https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80"
-                alt=""
+                src="https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1280&q=80"
+                alt="Style your shoes"
+                className="w-full h-full object-cover"
               />
-              <div className="absolute inset-0 flex flex-col justify-center items-start text-white px-4 sm:px-8 md:px-16 lg:px-40">
-                <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-semibold mb-2 md:mb-4 font-['Montserrat'] uppercase">
+              <div className="absolute inset-0 flex flex-col justify-center items-start text-white px-4 sm:px-8 md:px-16 lg:px-40 xl:px-48">
+                <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-semibold mb-2 md:mb-4 font-['Montserrat'] uppercase leading-tight">
                   Your Shoes Show
                 </h1>
-                <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-semibold mb-2 md:mb-4 font-['Montserrat'] uppercase ">
-                  Your Style{" "}
+                <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-semibold mb-2 md:mb-4 font-['Montserrat'] uppercase leading-tight">
+                  Your Style
                 </h1>
-                <p className="text-sm sm:text-base md:text-lg lg:text-xl text-grey-400 font-['Montserrat']">
+                <p className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl text-gray-200 font-['Montserrat'] mb-4 md:mb-6">
                   The Style of shoes available
                 </p>
-                <div className="mt-8">
-                  <div className="bg-[#ba7a2d] text-white px-8 py-3 rounded-sm hover:bg-gray-100 transition-colors overflow-hidden relative group h-12 w-fit">
-                    <div className="flex flex-col transition-transform gap-4 duration-300 group-hover:-translate-y-[45px] h-full">
+                <div className="mt-6 md:mt-8">
+                  <div className="bg-[#ba7a2d] text-white px-6 md:px-8 py-3 md:py-4 rounded-sm transition-colors overflow-hidden relative group h-12 md:h-14 w-fit hover:bg-[#a06a25]">
+                    <div className="flex flex-col transition-transform gap-4 duration-300 group-hover:-translate-y-[45px] md:group-hover:-translate-y-[52px] h-full">
                       <Link
                         to="/Shop"
-                        className="h-12 flex items-center font-semibold font-['Montserrat'] uppercase "
+                        className="h-12 md:h-14 flex items-center font-semibold font-['Montserrat'] uppercase text-sm md:text-base"
                       >
                         Shop Now
                       </Link>
                       <Link
                         to="/Shop"
-                        className="h-12 flex items-center font-semibold font-['Montserrat'] uppercase"
+                        className="h-12 md:h-14 flex items-center font-semibold font-['Montserrat'] uppercase text-sm md:text-base"
                       >
                         Shop Now
                       </Link>
