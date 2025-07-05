@@ -359,7 +359,7 @@ const Home = () => {
       <div className="flex flex-col lg:flex-row max-w-7xl my-12 sm:my-16 md:my-20 mx-auto gap-6 lg:gap-8 px-4">
 
           <div className="w-full lg:w-1/2">
-  <img src="https://5.imimg.com/data5/SELLER/Default/2023/4/302623436/GL/AU/MY/139842122/nike-guide-10-shoe.jpeghttps://cdn.vibecity.in/providers/640a0459db4ffe001103456c/1000160527_7125d805-8251-410c-8a33-e8f0962af3e9-3X.png" alt="" className="w-full h-auto" />
+  <img src="https://hips.hearstapps.com/hmg-prod/images/nike-running-shoes-67bc80dc79961.jpg?crop=0.668xw:1.00xh;0.194xw,0&resize=640:*" alt="" className="w-full h-auto" />
           </div>
           <div className="flex flex-col items-start justify-center w-full lg:w-1/2">
   <h2 className="text-xs sm:text-sm font-semibold text-gray-600 uppercase tracking-wider mb-2">New Arrivals</h2>
