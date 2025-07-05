@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useCart } from '../Context/CartContextProvider';
+import { useCart } from '../Context/CartContext';
 import { useNavigate } from 'react-router-dom';
 import { orderService } from '../services/orderService';
 import { useAuth } from '../Context/useAuth';

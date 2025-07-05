@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { useWishlist } from "../Context/WishlistContextProvider";
-import { useCart } from "../Context/CartContextProvider";
+import { useWishlist } from "../Context/WishlistContext";
+import { useCart } from "../Context/CartContext";
 import { useAuth } from '../Context/useAuth';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const { wishlist } = useWishlist();
-  const { cart } = useCart();
+  const cartContext = useCart();
   const { user } = useAuth();
-  const cartCount = Array.isArray(cart) ? cart.reduce((sum, item) => sum + item.qty, 0) : 0;
+  
+  // Add null check for cartContext
+  const cart = cartContext?.cart || [];
+  const cartCount = Array.isArray(cart) ? cart.reduce((sum, item) => sum + (item.quantity || 0), 0) : 0;
 
   // Debug: Log user data in development
   if (import.meta.env.DEV) {

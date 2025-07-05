@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import ProductCard from '../Components/ProductCard';
 import { Link } from 'react-router-dom';
-import { useCart } from '../Context/CartContextProvider';
-import { useWishlist } from '../Context/WishlistContextProvider';
+import { useCart } from '../Context/CartContext';
+import { useWishlist } from '../Context/WishlistContext';
 import QuickView from '../Components/QuickView';
 import { productService } from '../services/productService';
 import { toast } from 'react-hot-toast';

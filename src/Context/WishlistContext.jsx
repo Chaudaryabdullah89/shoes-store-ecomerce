@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { WishlistContext } from "./WishlistContextProvider";
+import { WishlistContext, useWishlist } from "./WishlistContextProvider";
 import { wishlistService } from '../services/wishlistService';
 import { useAuth } from './useAuth';
+
+export { useWishlist };
 
 export const WishlistProvider = ({ children }) => {
   const { user, token } = useAuth();

@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import { toast } from 'react-hot-toast';
-import { useWishlist } from '../Context/WishlistContextProvider';
-import { useCart } from '../Context/CartContextProvider';
+import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useWishlist } from '../Context/WishlistContext';
+import { useCart } from '../Context/CartContext';
 import ProductCard from '../Components/ProductCard';
 import { productService } from '../services/productService';
+import { toast } from 'react-hot-toast';
 
 // You may need to import Swiper, Pagination, Thumbs, etc. and getAllImages, setSelectedImage, setThumbsSwiper, selectedImage, selectedColor, setSelectedColor, buyNowToast, setBuyNowToast
 // For this rewrite, we focus on the syntax error and the main Product component structure.

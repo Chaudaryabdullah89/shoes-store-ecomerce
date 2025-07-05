@@ -4,10 +4,14 @@ import { cartService } from '../services/cartService';
 
 const CartContext = createContext();
 
+export { CartContext };
+
 // Custom hook to use cart context
 export const useCart = () => {
   const context = useContext(CartContext);
+  console.log('useCart called, context:', context); // Debug log
   if (!context) {
+    console.error('useCart must be used within a CartProvider'); // Debug log
     throw new Error('useCart must be used within a CartProvider');
   }
   return context;
@@ -271,6 +275,4 @@ export const CartProvider = ({ children }) => {
       {children}
     </CartContext.Provider>
   );
-};
-
-export default CartContext; 
+}; 
