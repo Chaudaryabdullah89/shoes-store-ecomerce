@@ -2,7 +2,7 @@ import {React,useState,useEffect} from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
-import "./style.css";
+import "./Style.css";
 import { Navigation, Pagination } from "swiper/modules";
 import { Link } from "react-router-dom";
 import { useCart } from "../Context/CartContextProvider";
