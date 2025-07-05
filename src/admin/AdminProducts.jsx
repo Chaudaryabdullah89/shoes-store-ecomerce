@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { productService } from '../services/productService';
-import AdminLayout from '../Admin/components/AdminLayout';
+import AdminLayout from './components/AdminLayout';
 
 const AdminProducts = () => {
   const [products, setProducts] = useState([]);

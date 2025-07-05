@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import AdminLayout from '../Admin/components/AdminLayout';
+import AdminLayout from './components/AdminLayout';
 import { productService } from '../services/productService';
 import api from '../services/api';
 import { useEditor, EditorContent } from '@tiptap/react';
