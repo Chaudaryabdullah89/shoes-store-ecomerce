@@ -45,6 +45,31 @@ const BlogRead = () => {
     }));
   };
 
+  // Function to format blog content with proper styling
+  const formatBlogContent = (content) => {
+    if (!content) return '';
+    
+    // Add custom styling classes to the content
+    return content
+      .replace(/<h1/g, '<h1 class="text-3xl font-bold text-gray-900 mb-4 mt-8"')
+      .replace(/<h2/g, '<h2 class="text-2xl font-bold text-gray-900 mb-3 mt-6"')
+      .replace(/<h3/g, '<h3 class="text-xl font-bold text-gray-900 mb-3 mt-5"')
+      .replace(/<h4/g, '<h4 class="text-lg font-bold text-gray-900 mb-2 mt-4"')
+      .replace(/<h5/g, '<h5 class="text-base font-bold text-gray-900 mb-2 mt-3"')
+      .replace(/<h6/g, '<h6 class="text-sm font-bold text-gray-900 mb-2 mt-2"')
+      .replace(/<p/g, '<p class="text-gray-700 leading-relaxed mb-4"')
+      .replace(/<ul/g, '<ul class="list-disc list-inside mb-4 space-y-1"')
+      .replace(/<ol/g, '<ol class="list-decimal list-inside mb-4 space-y-1"')
+      .replace(/<li/g, '<li class="text-gray-700"')
+      .replace(/<blockquote/g, '<blockquote class="border-l-4 border-gray-300 pl-4 italic text-gray-600 mb-4"')
+      .replace(/<code/g, '<code class="bg-gray-100 px-2 py-1 rounded text-sm font-mono"')
+      .replace(/<pre/g, '<pre class="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto mb-4"')
+      .replace(/<a/g, '<a class="text-blue-600 hover:text-blue-800 underline"')
+      .replace(/<strong/g, '<strong class="font-bold text-gray-900"')
+      .replace(/<em/g, '<em class="italic"')
+      .replace(/<img/g, '<img class="max-w-full h-auto rounded-lg shadow-md my-4"');
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-white">
@@ -195,7 +220,7 @@ const BlogRead = () => {
             {/* Content */}
             <div 
               className="prose prose-lg max-w-none prose-headings:text-gray-900 prose-p:text-gray-700 prose-strong:text-gray-900 prose-a:text-blue-600 prose-blockquote:border-l-blue-500 prose-code:bg-gray-100 prose-code:text-gray-800 prose-pre:bg-gray-900 prose-pre:text-gray-100"
-              dangerouslySetInnerHTML={{ __html: blog?.content || '' }}
+              dangerouslySetInnerHTML={{ __html: formatBlogContent(blog?.content || '') }}
             />
           </div>
 
