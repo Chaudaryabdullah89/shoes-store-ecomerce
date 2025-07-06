@@ -14,16 +14,18 @@ import Color from '@tiptap/extension-color';
 import TextStyle from '@tiptap/extension-text-style';
 
 const CATEGORY_OPTIONS = [
-  'Watches',
-  'Jewelry',
-  'Accessories',
-  'Clothing',
-  'Shoes',
-  'Bags',
-  'Electronics',
-  'Home & Garden',
-  'Sports',
-  'Books',
+  'Running Shoes',
+  'Basketball Shoes',
+  'Soccer Cleats',
+  'Tennis Shoes',
+  'Golf Shoes',
+  'Hiking Boots',
+  'Casual Sneakers',
+  'Formal Shoes',
+  'Sandals',
+  'Boots',
+  'Athletic Shoes',
+  'Slides & Flip Flops',
   'Other'
 ];
 
@@ -55,6 +57,9 @@ const AddProduct = () => {
   const [submitting, setSubmitting] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [showImageUpload, setShowImageUpload] = useState(false);
+  const [customCategory, setCustomCategory] = useState('');
+  const [showCustomCategory, setShowCustomCategory] = useState(false);
+  const [categories, setCategories] = useState(CATEGORY_OPTIONS);
   const imageUploadRef = useRef();
 
   // TipTap Editor Configuration
@@ -107,6 +112,27 @@ const AddProduct = () => {
       ...prev,
       tags: e.target.value
     }));
+  };
+
+  // Handle custom category
+  const handleCustomCategoryChange = e => {
+    setCustomCategory(e.target.value);
+  };
+
+  const addCustomCategory = () => {
+    if (customCategory.trim() && !categories.includes(customCategory.trim())) {
+      setCategories(prev => [...prev, customCategory.trim()]);
+      setForm(prev => ({ ...prev, category: customCategory.trim() }));
+      setCustomCategory('');
+      setShowCustomCategory(false);
+    }
+  };
+
+  const toggleCustomCategory = () => {
+    setShowCustomCategory(!showCustomCategory);
+    if (!showCustomCategory) {
+      setCustomCategory('');
+    }
   };
 
   // Handle colors
@@ -599,18 +625,56 @@ const AddProduct = () => {
           <div className="mb-4 flex gap-4">
             <div className="flex-1">
               <label className="block font-semibold mb-1">Category</label>
-              <select
-                name="category"
-                value={form.category}
-                onChange={handleChange}
-                className="border rounded px-3 py-2 w-full"
-                required
-              >
-                <option value="">Select category</option>
-                {CATEGORY_OPTIONS.map(cat => (
-                  <option key={cat} value={cat}>{cat}</option>
-                ))}
-              </select>
+              <div className="space-y-2">
+                <select
+                  name="category"
+                  value={form.category}
+                  onChange={handleChange}
+                  className="border rounded px-3 py-2 w-full"
+                  required
+                >
+                  <option value="">Select category</option>
+                  {categories.map(cat => (
+                    <option key={cat} value={cat}>{cat}</option>
+                  ))}
+                </select>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={toggleCustomCategory}
+                    className="text-blue-600 text-sm hover:text-blue-800 underline"
+                  >
+                    {showCustomCategory ? 'Cancel' : '+ Add Custom Category'}
+                  </button>
+                </div>
+                {showCustomCategory && (
+                  <div className="flex gap-2 items-end">
+                    <div className="flex-1">
+                      <input
+                        type="text"
+                        value={customCategory}
+                        onChange={handleCustomCategoryChange}
+                        placeholder="Enter custom category name"
+                        className="border rounded px-3 py-2 w-full text-sm"
+                        onKeyPress={(e) => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault();
+                            addCustomCategory();
+                          }
+                        }}
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      onClick={addCustomCategory}
+                      disabled={!customCategory.trim()}
+                      className="bg-blue-500 text-white px-3 py-2 rounded text-sm hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed"
+                    >
+                      Add
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
             <div className="flex-1">
               <label className="block font-semibold mb-1">Brand</label>

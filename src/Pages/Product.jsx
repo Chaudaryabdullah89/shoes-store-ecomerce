@@ -37,6 +37,10 @@ const Product = () => {
   const { addToWishlist } = useWishlist();
   const { addToCart } = useCart();
   const [loading, setLoading] = useState(true);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [allImages, setAllImages] = useState([]);
+  const [thumbsSwiper, setThumbsSwiper] = useState(null);
+  const [buyNowToast, setBuyNowToast] = useState(false);
 
   useEffect(() => {
     setLoading(true);
@@ -166,25 +170,38 @@ const Product = () => {
       <div className="flex flex-col lg:flex-row gap-6 sm:gap-8 lg:gap-12">
         {/* Left: Image Gallery */}
         <div className="lg:w-[40%] w-full flex flex-col items-center">
-          <div className="rounded-2xl bg-white border border-gray-100 p-2 sm:p-3 relative shadow-sm w-full">
+          {/* Main Image Display */}
+          <div className="rounded-2xl bg-white border border-gray-100 p-2 sm:p-3 relative shadow-sm w-full mb-4">
             {loading ? (
               <div className="animate-pulse h-[280px] sm:h-[320px] w-full rounded-xl bg-gray-100" />
             ) : product?.images && product.images.length > 0 && product.images[0]?.url ? (
-              <div className="group relative w-full h-[240px] sm:h-[280px] lg:h-[320px]">
+              <div className="group relative w-full h-[240px] sm:h-[280px] lg:h-[320px] overflow-hidden">
                 <img
-                  src={product.images[0].url}
+                  src={product.images[selectedImageIndex || 0]?.url || product.images[0]?.url}
                   alt={product?.name || "Product"}
-                  className="object-contain w-full h-[240px] sm:h-[280px] lg:h-[320px] rounded-xl bg-white transition-transform duration-300 group-hover:scale-110"
+                  className="object-contain w-full h-[240px] sm:h-[280px] lg:h-[320px] rounded-xl bg-white transition-all duration-300 scale-125"
                   style={{ cursor: "zoom-in" }}
+                  onMouseEnter={(e) => {
+                    e.target.style.transform = 'scale(1.25)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.transform = 'scale(1.25)';
+                  }}
                 />
               </div>
             ) : (
-              <div className="group relative w-full h-[240px] sm:h-[280px] lg:h-[320px]">
-              <img
-                src={fallbackImg}
-                alt="No product"
-                  className="object-contain w-full h-[240px] sm:h-[280px] lg:h-[320px] rounded-xl bg-white transition-transform duration-300 group-hover:scale-110"
+              <div className="group relative w-full h-[240px] sm:h-[280px] lg:h-[320px] overflow-hidden">
+                <img
+                  src={fallbackImg}
+                  alt="No product"
+                  className="object-contain w-full h-[240px] sm:h-[280px] lg:h-[320px] rounded-xl bg-white transition-all duration-300 group-hover:scale-125"
                   style={{ cursor: "zoom-in" }}
+                  onMouseEnter={(e) => {
+                    e.target.style.transform = 'scale(1.25)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.transform = 'scale(1)';
+                  }}
                 />
               </div>
             )}
@@ -200,24 +217,52 @@ const Product = () => {
               </span>
             )}
           </div>
+
+          {/* Thumbnail Gallery */}
+          {product?.images && product.images.length > 1 && (
+            <div className="w-full">
+              <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+                {product.images.map((image, index) => (
+                  <div
+                    key={index}
+                    className={`flex-shrink-0 cursor-pointer rounded-lg border-2 transition-all duration-200 ${
+                      (selectedImageIndex || 0) === index
+                        ? 'border-gray-900 shadow-md'
+                        : 'border-gray-200 hover:border-gray-400'
+                    }`}
+                    onClick={() => setSelectedImageIndex(index)}
+                  >
+                    <img
+                      src={image.url}
+                      alt={`${product?.name} - Image ${index + 1}`}
+                      className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-md"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Right: Product Info */}
         <div className="lg:w-[60%] w-full flex flex-col gap-4 sm:gap-6 lg:gap-7">
           <div className="flex items-start justify-between gap-3 sm:gap-4">
             <div className="flex-1">
-              <h1 className="text-xl sm:text-2xl lg:text-3xl font-semibold text-gray-900 mb-1 tracking-tight leading-tight">
+              <h1 className="text-xl font-montserrat sm:text-2xl lg:text-3xl font-semibold text-gray-900 mb-1 tracking-tight leading-tight">
                 {product?.name || <span className="animate-pulse bg-gray-200 rounded w-32 h-6 inline-block" />}
               </h1>
-              <div className="flex items-center gap-2 mb-2">
+              {/* <div className="flex items-center gap-2 mb-2">
                 <RatingStars value={product?.rating || 4.2} />
                 <span className="ml-1 text-xs text-gray-500">
                   {product?.rating?.toFixed(1) || '4.2'} ({product?.reviewsCount || 128} reviews)
                 </span>
-              </div>
+              </div> */}
               {product?.brand && (
-                <div className="text-xs text-gray-400 font-medium mb-1">
-                  Brand: <span className="text-gray-700">{product.brand}</span>
+                <div className="inline-flex mt-1 font-montserrat items-center gap-1.5 px-2 py-1 bg-gray-50 border border-gray-200 rounded-lg text-xs font-medium text-gray-600 ">
+                  <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+                  </svg>
+                  <span className="text-gray-900 font-semibold">{product.brand}</span>
                 </div>
               )}
             </div>
@@ -232,7 +277,7 @@ const Product = () => {
             </button>
           </div>
           {/* Price */}
-          <div className="flex items-center gap-2 sm:gap-4 mt-1">
+          <div className="flex items-center gap-2 sm:gap-4 -mt-2">
             <span className="text-xl sm:text-2xl lg:text-3xl font-semibold text-gray-900 tracking-tight">
               ${(currentPrice ?? 0).toFixed(2)}
             </span>
@@ -245,6 +290,16 @@ const Product = () => {
               </span>
             )}
           </div>
+          {product?.description && (
+            <div className="text-gray-500 text-sm sm:text-base -mt-2 line-clamp-3">
+              <div 
+                className="text-gray-500 text-sm sm:text-base"
+                dangerouslySetInnerHTML={{ 
+                  __html: product.description.replace(/<[^>]*>/g, '').split('\n').slice(0, 2).join('\n') 
+                }}
+              />
+            </div>
+          )}
           {/* Color Option */}
           {product?.colors?.length > 0 && (
             <div>
@@ -253,12 +308,12 @@ const Product = () => {
                 {product.colors.map((color, idx) => (
                   <button
                     key={color.name || idx}
-                    className={`flex items-center gap-1.5 sm:gap-2 px-1.5 sm:px-2 py-1 rounded-lg border transition-all duration-150 ${selectedColor === color ? 'border-gray-900 bg-gray-100' : 'border-gray-200 bg-white hover:border-gray-300'}`}
+                    className={`flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 rounded-lg border transition-all duration-150 ${selectedColor === color ? 'border-gray-900 bg-gray-100' : 'border-gray-200 bg-white hover:border-gray-300'}`}
                     onClick={() => setSelectedColor(color)}
                   >
                     <span
                       className="inline-block w-4 h-4 sm:w-5 sm:h-5 rounded-full border border-gray-300"
-                      style={{ background: color.value }}
+                      style={{ background: color.hex || color.value }}
                       title={color.name}
                     ></span>
                     <span className="capitalize text-xs font-medium">{color.name}</span>
@@ -267,15 +322,16 @@ const Product = () => {
               </div>
             </div>
           )}
+           
           {/* Size Option */}
           {(Array.isArray(product?.sizes) && product.sizes.length > 0) && (
-            <div>
+            <div classname='-mb-2'>
               <div className="font-medium mb-2 text-sm text-gray-700">Size</div>
               <div className="flex flex-wrap gap-1.5 sm:gap-2">
                 {product.sizes.map((size, idx) => (
                   <button
                     key={size?._id || size?.name || size || idx}
-                    className={`px-2 sm:px-3 py-1 rounded-lg border text-xs font-medium capitalize transition-all duration-150 ${selectedSize === size ? 'border-gray-900 bg-gray-100' : 'border-gray-200 bg-white hover:border-gray-300'}`}
+                    className={`px-2 sm:px-5 py-2 rounded-lg border text-xs font-medium capitalize transition-all duration-150 ${selectedSize === size ? 'border-gray-900 bg-gray-100' : 'border-gray-200 bg-white hover:border-gray-300'}`}
                     onClick={() => setSelectedSize(size)}
                   >
                     {size?.name || size}
@@ -285,48 +341,43 @@ const Product = () => {
             </div>
           )}
           {/* Description */}
-          {product?.description && (
-            <div className="text-gray-500 text-sm sm:text-base mt-2 line-clamp-3">
-              <div 
-                className="text-gray-500 text-sm sm:text-base"
-                dangerouslySetInnerHTML={{ 
-                  __html: product.description.replace(/<[^>]*>/g, '').split('\n').slice(0, 2).join('\n') 
-                }}
-              />
-            </div>
-          )}
+        
           {/* Stock indicator */}
           {typeof product?.stock !== 'undefined' && (
-            <div className="text-xs text-green-700 font-medium mb-1 flex items-center gap-1">
+            <div className="text-xs text-green-700 font-medium -mb-1 flex items-center gap-1">
               <span className="w-2 h-2 rounded-full bg-green-500 inline-block" />
               In stock: {product.stock}
             </div>
           )}
           {/* Quantity and Add to Cart */}
-          <div className="flex items-center gap-3 sm:gap-4 mt-2">
-            <span className="font-medium text-sm text-gray-700">Qty</span>
-            <button
-              onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-              className="border rounded-full w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center text-base sm:text-lg font-bold hover:bg-gray-100 transition"
-              aria-label="Decrease quantity"
-            >
-              –
-            </button>
-            <input
-              type="number"
-              min={1}
-              value={quantity}
-              onChange={e => setQuantity(Math.max(1, Number(e.target.value)))}
-              className="w-10 sm:w-12 text-center border rounded-lg py-1 text-sm sm:text-base font-medium focus:ring-2 focus:ring-gray-900 transition"
-              style={{ WebkitAppearance: 'none', MozAppearance: 'textfield' }}
-            />
-            <button
-              onClick={() => setQuantity((q) => q + 1)}
-              className="border rounded-full w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center text-base sm:text-lg font-bold hover:bg-gray-100 transition"
-              aria-label="Increase quantity"
-            >
-              +
-            </button>
+          <div className="flex items-center gap-2 -mt-1">
+            <span className="text-sm font-medium text-gray-700">Quantity</span>
+            <div className="flex items-center border rounded-lg">
+              <button
+                onClick={() => setQuantity(prev => Math.max(1, prev - 1))}
+                className="px-3 py-2 text-gray-600 hover:bg-gray-50 transition-colors"
+                disabled={quantity <= 1}
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+                </svg>
+              </button>
+              <input
+                type="number"
+                min="1"
+                value={quantity}
+                onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+                className="w-16 text-center border-x py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <button
+                onClick={() => setQuantity(prev => prev + 1)}
+                className="px-3 py-2 text-gray-600 hover:bg-gray-50 transition-colors"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                </svg>
+              </button>
+            </div>
           </div>
           <div className="flex flex-col sm:flex-row gap-3 mt-4 sm:mt-5">
             <button
