@@ -22,6 +22,7 @@ const BlogRead = () => {
         setBlog(blogRes.data.blog || blogRes.data);
         setRecentBlogs(recentRes.data.blogs || recentRes.data);
       } catch (err) {
+        console.error('Error fetching blog:', err);
         setError('Failed to load blog post.');
       } finally {
         setLoading(false);
@@ -116,7 +117,7 @@ const BlogRead = () => {
     );
   }
 
-  if (!blog) {
+  if (!blog || !blog._id) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
@@ -140,15 +141,21 @@ const BlogRead = () => {
             {/* Title */}
             <div className="mb-8">
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4 text-center capitalize">
-                {blog.title}
+                {blog?.title || 'Untitled Blog Post'}
               </h1>
               <div className="flex items-center justify-center gap-4 text-sm text-gray-500 mb-6">
-                <span>📅 {new Date(blog.createdAt).toLocaleDateString()}</span>
-                <span>👁️ {blog.views || 0} views</span>
-                {blog.author && <span>✍️ {blog.author}</span>}
+                <span>📅 {blog?.createdAt ? new Date(blog.createdAt).toLocaleDateString() : 'Unknown date'}</span>
+                <span>👁️ {blog?.views || 0} views</span>
+                {blog?.author && (
+                  <span>✍️ {
+                    typeof blog.author === 'object' && blog.author?.name 
+                      ? blog.author.name 
+                      : blog.author
+                  }</span>
+                )}
               </div>
               <div className="flex flex-wrap justify-center gap-2 mb-6">
-                {blog.tags?.map((tag, index) => (
+                {blog?.tags?.map((tag, index) => (
                   <span
                     key={index}
                     className="px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-full"
@@ -160,7 +167,7 @@ const BlogRead = () => {
             </div>
 
             {/* Featured Image */}
-            {blog.image && (
+            {(blog?.image?.url || blog?.image) && (
               <div className="mb-8">
                 <div className="relative h-64 sm:h-80 md:h-96 bg-gray-200 rounded-lg overflow-hidden">
                   {imageLoadingStates[blog._id] !== false && (
@@ -172,8 +179,8 @@ const BlogRead = () => {
                   )}
                   
                   <img
-                    src={blog.image}
-                    alt={blog.title}
+                    src={blog.image?.url || blog.image}
+                    alt={blog.title || 'Blog image'}
                     className={`w-full h-full object-cover transition-opacity duration-300 ${
                       imageLoadingStates[blog._id] !== false ? 'opacity-0' : 'opacity-100'
                     }`}
@@ -188,7 +195,7 @@ const BlogRead = () => {
             {/* Content */}
             <div 
               className="prose prose-lg max-w-none prose-headings:text-gray-900 prose-p:text-gray-700 prose-strong:text-gray-900 prose-a:text-blue-600 prose-blockquote:border-l-blue-500 prose-code:bg-gray-100 prose-code:text-gray-800 prose-pre:bg-gray-900 prose-pre:text-gray-100"
-              dangerouslySetInnerHTML={{ __html: blog.content }}
+              dangerouslySetInnerHTML={{ __html: blog?.content || '' }}
             />
           </div>
 
@@ -216,8 +223,8 @@ const BlogRead = () => {
                         )}
                         
                         <img
-                          src={recentBlog.image || '/placeholder-image.jpg'}
-                          alt={recentBlog.title}
+                          src={recentBlog.image?.url || recentBlog.image || '/placeholder-image.jpg'}
+                          alt={recentBlog.title || 'Recent blog'}
                           className={`w-full h-full object-cover transition-opacity duration-300 ${
                             imageLoadingStates[recentBlog._id] !== false ? 'opacity-0' : 'opacity-100'
                           }`}
@@ -228,10 +235,10 @@ const BlogRead = () => {
                       </div>
                       <div className="flex-1 min-w-0">
                         <h4 className="font-medium text-gray-900 text-sm line-clamp-2 mb-1">
-                          {recentBlog.title}
+                          {recentBlog.title || 'Untitled'}
                         </h4>
                         <p className="text-xs text-gray-500 mb-1">
-                          {new Date(recentBlog.createdAt).toLocaleDateString()}
+                          {recentBlog.createdAt ? new Date(recentBlog.createdAt).toLocaleDateString() : 'Unknown date'}
                         </p>
                         <div className="flex flex-wrap gap-1">
                           {recentBlog.tags?.slice(0, 2).map((tag, index) => (
