@@ -51,10 +51,13 @@ export const CartProvider = ({ children }) => {
 
       const cartItem = {
         id: productId,
+        _id: productId, // Add _id for consistency
         name: product.name,
         price: product.price || product.currentPrice || 0,
+        currentPrice: product.price || product.currentPrice || 0, // Add currentPrice for checkout
         image: product.images?.[0]?.url || product.image || '',
         quantity: quantity,
+        qty: quantity, // Add qty for checkout compatibility
         color: color,
         size: size,
         maxQuantity: Math.min(product.stock || 10, 10)
@@ -66,7 +69,7 @@ export const CartProvider = ({ children }) => {
         console.log('Previous cart:', prevCart);
         
         const existingItemIndex = prevCart.findIndex(item => 
-          item.id === cartItem.id && 
+          (item.id === cartItem.id || item._id === cartItem.id) && 
           item.color === cartItem.color && 
           item.size === cartItem.size
         );
@@ -75,8 +78,10 @@ export const CartProvider = ({ children }) => {
           // Update existing item
           const updatedCart = [...prevCart];
           updatedCart[existingItemIndex].quantity += quantity;
+          updatedCart[existingItemIndex].qty += quantity; // Update qty as well
           if (updatedCart[existingItemIndex].quantity > updatedCart[existingItemIndex].maxQuantity) {
             updatedCart[existingItemIndex].quantity = updatedCart[existingItemIndex].maxQuantity;
+            updatedCart[existingItemIndex].qty = updatedCart[existingItemIndex].maxQuantity;
           }
           console.log('Updated existing item, new cart:', updatedCart);
           return updatedCart;
@@ -124,8 +129,12 @@ export const CartProvider = ({ children }) => {
   const updateItemQuantity = async (itemId, newQuantity) => {
     setCart(prevCart => 
       prevCart.map(item => 
-        item.id === itemId 
-          ? { ...item, quantity: Math.max(1, Math.min(newQuantity, item.maxQuantity)) }
+        (item.id === itemId || item._id === itemId)
+          ? { 
+              ...item, 
+              quantity: Math.max(1, Math.min(newQuantity, item.maxQuantity)),
+              qty: Math.max(1, Math.min(newQuantity, item.maxQuantity)) // Update qty as well
+            }
           : item
       )
     );
@@ -142,7 +151,9 @@ export const CartProvider = ({ children }) => {
 
   // Remove item from cart
   const removeFromCart = async (itemId) => {
-    setCart(prevCart => prevCart.filter(item => item.id !== itemId));
+    setCart(prevCart => prevCart.filter(item => 
+      item.id !== itemId && item._id !== itemId
+    ));
 
     // If user is logged in, sync to server
     if (user) {

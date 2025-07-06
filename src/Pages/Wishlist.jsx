@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { useCart } from "../Context/CartContext";
-import { useWishlist } from "../Context/WishlistContext";
+import React, { useEffect, useState } from "react";
+import { useWishlist } from "../Context/WishlistContextProvider";
+import { useCart } from "../Context/CartContextProvider";
 import { Link } from "react-router-dom";
 import { productService } from '../services/productService';
 
@@ -63,13 +63,16 @@ const Wishlist = () => {
                     <div className="flex flex-col sm:flex-row gap-2">
                       <button
                         onClick={() => {
-                          addToCart({
+                          const productToAdd = {
                             ...item,
+                            _id: item.id || item._id,
                             id: item.id || item._id,
                             name: item.name,
-                            image: item.image || (Array.isArray(item.images) && item.images[0]?.url) || "https://via.placeholder.com/300x300?text=No+Image",
-                            currentPrice: item.currentPrice ?? item.price ?? 0
-                          }, 1);
+                            price: item.currentPrice ?? item.price ?? 0,
+                            currentPrice: item.currentPrice ?? item.price ?? 0,
+                            image: item.image || (Array.isArray(item.images) && item.images[0]?.url) || "https://via.placeholder.com/300x300?text=No+Image"
+                          };
+                          addToCart(productToAdd, 1, null, null);
                           console.log('Adding to cart:', item);
                         }}
                         className="border border-black rounded-full px-3 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm font-semibold hover:bg-black hover:text-white transition"
@@ -130,13 +133,16 @@ const Wishlist = () => {
                   <td className="flex gap-2">
                     <button
                       onClick={() => {
-                        addToCart({
+                        const productToAdd = {
                           ...item,
+                          _id: item.id || item._id,
                           id: item.id || item._id,
                           name: item.name,
-                          image: item.image || (Array.isArray(item.images) && item.images[0]?.url) || "https://via.placeholder.com/300x300?text=No+Image",
-                          currentPrice: item.currentPrice ?? item.price ?? 0
-                        }, 1);
+                          price: item.currentPrice ?? item.price ?? 0,
+                          currentPrice: item.currentPrice ?? item.price ?? 0,
+                          image: item.image || (Array.isArray(item.images) && item.images[0]?.url) || "https://via.placeholder.com/300x300?text=No+Image"
+                        };
+                        addToCart(productToAdd, 1, null, null);
                         console.log('Adding to cart:', item);
                       }}
                       className="border border-black rounded-full px-4 py-1 text-xs font-semibold hover:bg-black hover:text-white transition"
@@ -184,13 +190,16 @@ const Wishlist = () => {
               </div>
               <button 
                 onClick={() => {
-                  addToCart({
+                  const productToAdd = {
                     ...rec,
+                    _id: rec.id || rec._id,
                     id: rec.id || rec._id,
                     name: rec.name,
-                    image: rec.image || (Array.isArray(rec.images) && rec.images[0]?.url) || "https://via.placeholder.com/300x300?text=No+Image",
-                    currentPrice: rec.currentPrice ?? rec.price ?? 0
-                  }, 1);
+                    price: rec.currentPrice ?? rec.price ?? 0,
+                    currentPrice: rec.currentPrice ?? rec.price ?? 0,
+                    image: rec.image || (Array.isArray(rec.images) && rec.images[0]?.url) || "https://via.placeholder.com/300x300?text=No+Image"
+                  };
+                  addToCart(productToAdd, 1, null, null);
                   console.log('Adding recommendation to cart:', rec);
                 }}
                 className="text-xs text-yellow-600 font-bold border border-yellow-600 rounded-full px-3 py-1 hover:bg-yellow-50 transition"

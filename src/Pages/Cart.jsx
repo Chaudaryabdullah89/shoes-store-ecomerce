@@ -7,14 +7,14 @@ import { toast } from 'react-hot-toast'
 const FREE_SHIPPING_THRESHOLD = 600;
 
 const Cart = () => {
-  const { cart, removeFromCart, updateItemQuantity, addToCart } = useCart();
+  const { cart, removeFromCart, updateItemQuantity, addToCart, getCartTotals } = useCart();
   const navigate = useNavigate();
   const [orderNote, setOrderNote] = useState("");
   const [coupon, setCoupon] = useState("");
   const [products, setProducts] = useState([]);
 
   // Calculate total
-  const { subtotal, tax, shipping, total } = cart.length > 0 ? useCart().getCartTotals() : { subtotal: 0, tax: 0, shipping: 0, total: 0 };
+  const { subtotal, tax, shipping, total } = getCartTotals();
   
   const amountToFreeShipping = Math.max(0, FREE_SHIPPING_THRESHOLD - subtotal);
   const shippingProgress = Math.min(100, (subtotal / FREE_SHIPPING_THRESHOLD) * 100);
@@ -43,7 +43,16 @@ const Cart = () => {
   };
 
   const handleAddToCart = (product) => {
-    addToCart(product, 1);
+    const productToAdd = {
+      ...product,
+      _id: product._id || product.id,
+      id: product._id || product.id,
+      name: product.name,
+      price: product.price || product.currentPrice || 0,
+      currentPrice: product.price || product.currentPrice || 0,
+      image: product.image || (Array.isArray(product.images) && product.images[0]?.url) || "https://via.placeholder.com/300x300?text=No+Image"
+    };
+    addToCart(productToAdd, 1, null, null);
   };
 
   return (
@@ -89,49 +98,55 @@ const Cart = () => {
 
                 {/* Cart Items List */}
                 <div className="space-y-3 sm:space-y-4">
-                  {cart.map((item) => (
-                    <div key={`${item.id}-${item.color}-${item.size}`} className="flex flex-col sm:flex-row gap-3 sm:gap-4 py-3 sm:py-4 border-b">
-                      <div className="flex gap-3 sm:gap-4">
-                        <img 
-                          src={item.image} 
-                          alt={item.name} 
-                          className="w-16 h-16 sm:w-24 sm:h-24 object-contain rounded flex-shrink-0" 
-                        />
-                        <div className="flex-1 min-w-0">
-                          <div className="font-semibold text-base sm:text-lg truncate">{item.name}</div>
-                          <div className="text-black font-bold text-base sm:text-lg">${item.price.toFixed(2)}</div>
-                          <div className="text-xs sm:text-sm text-gray-500 mt-1">
-                            {item.color && <span>Color: <span className="font-semibold text-gray-700">{item.color}</span></span>}
-                            {item.size && <span className="ml-2 sm:ml-4">Size: <span className="font-semibold text-gray-700">{item.size}</span></span>}
+                  {cart.map((item) => {
+                    const itemId = item.id || item._id;
+                    const itemQuantity = item.quantity || item.qty || 1;
+                    const itemPrice = item.price || item.currentPrice || 0;
+                    
+                    return (
+                      <div key={`${itemId}-${item.color}-${item.size}`} className="flex flex-col sm:flex-row gap-3 sm:gap-4 py-3 sm:py-4 border-b">
+                        <div className="flex gap-3 sm:gap-4">
+                          <img 
+                            src={item.image} 
+                            alt={item.name} 
+                            className="w-16 h-16 sm:w-24 sm:h-24 object-contain rounded flex-shrink-0" 
+                          />
+                          <div className="flex-1 min-w-0">
+                            <div className="font-semibold text-base sm:text-lg truncate">{item.name}</div>
+                            <div className="text-black font-bold text-base sm:text-lg">${itemPrice.toFixed(2)}</div>
+                            <div className="text-xs sm:text-sm text-gray-500 mt-1">
+                              {item.color && <span>Color: <span className="font-semibold text-gray-700">{item.color}</span></span>}
+                              {item.size && <span className="ml-2 sm:ml-4">Size: <span className="font-semibold text-gray-700">{item.size}</span></span>}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                      
-                      <div className="flex items-center justify-between sm:justify-start gap-3 sm:gap-4">
-                        <div className="flex items-center">
-                          <button
-                            className="w-8 h-8 sm:w-10 sm:h-10 border border-gray-300 rounded flex items-center justify-center text-lg sm:text-xl hover:bg-gray-100 transition"
-                            onClick={() => handleUpdateQuantity(item.id, Math.max(1, item.quantity - 1))}
-                          >-</button>
-                          <span className="w-8 sm:w-12 text-center text-base sm:text-lg mx-2">{item.quantity}</span>
-                          <button
-                            className="w-8 h-8 sm:w-10 sm:h-10 border border-gray-300 rounded flex items-center justify-center text-lg sm:text-xl hover:bg-gray-100 transition"
-                            onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)}
-                          >+</button>
+                        
+                        <div className="flex items-center justify-between sm:justify-start gap-3 sm:gap-4">
+                          <div className="flex items-center">
+                            <button
+                              className="w-8 h-8 sm:w-10 sm:h-10 border border-gray-300 rounded flex items-center justify-center text-lg sm:text-xl hover:bg-gray-100 transition"
+                              onClick={() => handleUpdateQuantity(itemId, Math.max(1, itemQuantity - 1))}
+                            >-</button>
+                            <span className="w-8 sm:w-12 text-center text-base sm:text-lg mx-2">{itemQuantity}</span>
+                            <button
+                              className="w-8 h-8 sm:w-10 sm:h-10 border border-gray-300 rounded flex items-center justify-center text-lg sm:text-xl hover:bg-gray-100 transition"
+                              onClick={() => handleUpdateQuantity(itemId, itemQuantity + 1)}
+                            >+</button>
+                          </div>
+                          <div className="text-right sm:text-left">
+                            <div className="font-bold text-base sm:text-lg">${(itemPrice * itemQuantity).toFixed(2)}</div>
+                          </div>
                         </div>
-                        <div className="text-right sm:text-left">
-                          <div className="font-bold text-base sm:text-lg">${(item.price * item.quantity).toFixed(2)}</div>
-                        </div>
+                        
+                        <button
+                          className="text-xs sm:text-sm text-gray-400 underline hover:text-gray-600 transition"
+                          onClick={() => handleRemoveItem(itemId)}
+                        >
+                          Remove
+                        </button>
                       </div>
-                      
-                      <button
-                        className="text-xs sm:text-sm text-gray-400 underline hover:text-gray-600 transition"
-                        onClick={() => handleRemoveItem(item.id)}
-                      >
-                        Remove
-                      </button>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
 

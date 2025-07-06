@@ -126,7 +126,16 @@ const QuickView = ({
                 <button
                   className="w-full sm:flex-1 border border-gray-400 rounded px-4 sm:px-6 py-2 font-semibold text-black hover:bg-gray-100 transition text-sm sm:text-base"
                   onClick={() => {
-                    addToCart(quickViewProduct, quickViewQty);
+                    const productToAdd = {
+                      ...quickViewProduct,
+                      _id: quickViewProduct._id || quickViewProduct.id,
+                      id: quickViewProduct._id || quickViewProduct.id,
+                      name: quickViewProduct.name,
+                      price: quickViewProduct.price || quickViewProduct.currentPrice || 0,
+                      currentPrice: quickViewProduct.price || quickViewProduct.currentPrice || 0,
+                      image: quickViewProduct.image || (Array.isArray(quickViewProduct.images) && quickViewProduct.images[0]?.url) || "https://via.placeholder.com/300x300?text=No+Image"
+                    };
+                    addToCart(productToAdd, quickViewQty, null, null);
                     setQuickViewProduct(null);
                   }}
                   disabled={!agreed}

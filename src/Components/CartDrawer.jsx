@@ -77,9 +77,11 @@ const CartDrawer = () => {
             const itemPrice = typeof item.price === 'number' ? item.price : 0;
             const itemName = item.name || 'Product';
             const itemImage = item.image || 'https://via.placeholder.com/80x80?text=No+Image';
+            const itemId = item.id || item._id; // Use either id or _id
+            const itemQuantity = item.quantity || item.qty || 1; // Use either quantity or qty
             
             return (
-              <div key={item._id} className="flex gap-3 sm:gap-4 py-4 sm:py-6 border-b">
+              <div key={itemId} className="flex gap-3 sm:gap-4 py-4 sm:py-6 border-b">
                 <img src={itemImage} alt={itemName} className="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded" />
                 <div className="flex-1 min-w-0">
                   <div className="font-semibold text-sm sm:text-base truncate">{itemName}</div>
@@ -91,17 +93,17 @@ const CartDrawer = () => {
                   <div className="flex items-center mt-2">
                     <button
                       className="w-6 h-6 sm:w-8 sm:h-8 border border-gray-300 rounded flex items-center justify-center text-lg sm:text-xl"
-                      onClick={() => updateItemQuantity(item._id, Math.max(1, (item.quantity || 1) - 1))}
+                      onClick={() => updateItemQuantity(itemId, Math.max(1, itemQuantity - 1))}
                     >-</button>
-                    <span className="w-6 sm:w-8 text-center text-sm sm:text-base">{item.quantity || 1}</span>
+                    <span className="w-6 sm:w-8 text-center text-sm sm:text-base">{itemQuantity}</span>
                     <button
                       className="w-6 h-6 sm:w-8 sm:h-8 border border-gray-300 rounded flex items-center justify-center text-lg sm:text-xl"
-                      onClick={() => updateItemQuantity(item._id, (item.quantity || 1) + 1)}
+                      onClick={() => updateItemQuantity(itemId, itemQuantity + 1)}
                     >+</button>
                   </div>
                   <button
                     className="text-xs text-gray-400 underline mt-2"
-                    onClick={() => removeFromCart(item._id)}
+                    onClick={() => removeFromCart(itemId)}
                   >
                     Remove
                   </button>

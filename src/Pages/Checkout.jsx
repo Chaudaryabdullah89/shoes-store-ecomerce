@@ -26,7 +26,11 @@ const CheckoutForm = ({ cart, user, clearCart, navigate }) => {
   const stripe = useStripe();
   const elements = useElements();
 
-  const total = Array.isArray(cart) ? cart.reduce((sum, item) => sum + item.currentPrice * item.qty, 0) : 0;
+  const total = Array.isArray(cart) ? cart.reduce((sum, item) => {
+    const price = item.currentPrice || item.price || 0;
+    const quantity = item.qty || item.quantity || 1;
+    return sum + (price * quantity);
+  }, 0) : 0;
   const shipping = total >= 600 ? 0 : 15;
   const tax = total * 0.08;
   const finalTotal = total + shipping + tax;
@@ -146,14 +150,20 @@ const CheckoutForm = ({ cart, user, clearCart, navigate }) => {
       setIsProcessing(false);
       return;
     }
-    const items = cart.filter(item => item.id).map(item => ({
-      product: item.id,
-      quantity: item.qty,
-      size: item.size,
-      color: item.color,
-      price: item.currentPrice,
-      name: item.name,
-    }));
+    const items = cart.filter(item => item.id || item._id).map(item => {
+      const itemId = item.id || item._id;
+      const itemQuantity = item.qty || item.quantity || 1;
+      const itemPrice = item.currentPrice || item.price || 0;
+      
+      return {
+        product: itemId,
+        quantity: itemQuantity,
+        size: item.size,
+        color: item.color,
+        price: itemPrice,
+        name: item.name,
+      };
+    });
 
     let paymentInfo = { id: 'COD', status: 'pending', method: formData.paymentMethod };
     if (formData.paymentMethod === 'card') {
@@ -269,12 +279,23 @@ const CheckoutForm = ({ cart, user, clearCart, navigate }) => {
     <div className="bg-white rounded-lg shadow p-6 sticky top-8">
       <h2 className="text-lg font-semibold mb-4">Order Summary</h2>
       <ul className="divide-y divide-gray-200 mb-4">
-        {cart.map(item => (
-          <li key={item.id} className="py-2 flex items-center justify-between">
-            <span className="text-sm">{item.name} x{item.qty}</span>
-            <span className="text-sm font-medium">${(item.currentPrice * item.qty).toFixed(2)}</span>
-          </li>
-        ))}
+        {cart.map(item => {
+          const itemId = item.id || item._id;
+          const itemPrice = item.currentPrice || item.price || 0;
+          const itemQuantity = item.qty || item.quantity || 1;
+          const itemName = item.name || 'Product';
+          
+          return (
+            <li key={itemId} className="py-2 flex items-center justify-between">
+              <div className="flex-1">
+                <span className="text-sm">{itemName} x{itemQuantity}</span>
+                {item.color && <div className="text-xs text-gray-500">Color: {item.color}</div>}
+                {item.size && <div className="text-xs text-gray-500">Size: {item.size}</div>}
+              </div>
+              <span className="text-sm font-medium">${(itemPrice * itemQuantity).toFixed(2)}</span>
+            </li>
+          );
+        })}
       </ul>
       <div className="flex justify-between text-sm mb-1"><span>Subtotal</span><span>${total.toFixed(2)}</span></div>
       <div className="flex justify-between text-sm mb-1"><span>Shipping</span><span>{shipping === 0 ? 'Free' : `$${shipping.toFixed(2)}`}</span></div>

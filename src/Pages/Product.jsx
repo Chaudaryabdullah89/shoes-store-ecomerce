@@ -89,8 +89,10 @@ const Product = () => {
       return;
     }
     const cartItem = {
+      _id: product._id || product.id,
       id: product._id || product.id,
       name: product.name,
+      price: typeof product.price === 'number' ? product.price : 0,
       currentPrice: typeof product.price === 'number' ? product.price : 0,
       image:
         Array.isArray(product.images) && product.images.length > 0
@@ -98,10 +100,8 @@ const Product = () => {
             ? product.images[0]
             : product.images[0]?.url
         : '',
-      color: selectedColor?.name || null,
-      size: selectedSize?.name || selectedSize || null,
     };
-    addToCart(cartItem, quantity, cartItem.color);
+    addToCart(cartItem, quantity, selectedColor?.name || null, selectedSize?.name || selectedSize || null);
     toast.success('Added to cart!');
   };
 
@@ -115,8 +115,10 @@ const Product = () => {
       return;
     }
     const cartItem = {
+      _id: product._id || product.id,
       id: product._id || product.id,
       name: product.name,
+      price: typeof product.price === 'number' ? product.price : 0,
       currentPrice: typeof product.price === 'number' ? product.price : 0,
       image:
         Array.isArray(product.images) && product.images.length > 0
@@ -124,10 +126,8 @@ const Product = () => {
             ? product.images[0]
             : product.images[0]?.url
         : '',
-      color: selectedColor?.name || null,
-      size: selectedSize?.name || selectedSize || null,
     };
-    addToCart(cartItem, quantity, cartItem.color, false); // Do not open cart drawer
+    addToCart(cartItem, quantity, selectedColor?.name || null, selectedSize?.name || selectedSize || null);
     toast.success('Added to cart! Redirecting...');
     setTimeout(() => {
       navigate('/cart');
