@@ -175,8 +175,32 @@ const AdminOrders = () => {
                           </div>
                           <div className="flex justify-between font-bold border-t pt-1">
                             <span>Total:</span>
-                            <span>${order.totalPrice?.toFixed(2)}</span>
+                            <span>${order.paymentInfo?.method === 'card' ? '0.00' : order.totalPrice?.toFixed(2)}</span>
                           </div>
+                        </div>
+                        
+                        {/* Payment Method Display */}
+                        <div className="mt-3 pt-3 border-t border-gray-200">
+                          <div className="flex justify-between items-center">
+                            <span className="text-xs text-gray-600">Payment Method:</span>
+                            <span className="text-xs font-medium">
+                              {order.paymentInfo?.method === 'card' ? '💳 Card Payment' : 
+                               order.paymentInfo?.method === 'cod' ? '💵 Cash on Delivery' : 
+                               order.paymentInfo?.method || 'Not specified'}
+                            </span>
+                          </div>
+                          
+                          {/* Card Payment Notice */}
+                          {order.paymentInfo?.method === 'card' && (
+                            <div className="mt-2 p-2 bg-green-50 border border-green-200 rounded-lg">
+                              <div className="flex items-center text-xs text-green-700">
+                                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                Payment completed via card
+                              </div>
+                            </div>
+                          )}
                         </div>
                       </div>
 
@@ -250,7 +274,7 @@ const AdminOrders = () => {
                         <tr className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
                           <td className="py-4 px-6 font-semibold text-gray-900">#{order.orderNumber}</td>
                           <td className="py-4 px-6 text-gray-600">{order.user?.name || 'Guest'}</td>
-                          <td className="py-4 px-6 font-medium text-green-600">${order.totalPrice?.toFixed(2) || '-'}</td>
+                          <td className="py-4 px-6 font-medium text-green-600">${order.paymentInfo?.method === 'card' ? '0.00' : order.totalPrice?.toFixed(2) || '-'}</td>
                           <td className="py-4 px-6">
                             <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(order.status)}`}>
                               {order.status}
@@ -317,8 +341,32 @@ const AdminOrders = () => {
                                       </div>
                                       <div className="flex justify-between font-bold border-t pt-2">
                                         <span>Total:</span>
-                                        <span>${order.totalPrice?.toFixed(2)}</span>
+                                        <span>${order.paymentInfo?.method === 'card' ? '0.00' : order.totalPrice?.toFixed(2)}</span>
                                       </div>
+                                    </div>
+                                    
+                                    {/* Payment Method Display */}
+                                    <div className="mt-4 pt-3 border-t border-gray-200">
+                                      <div className="flex justify-between items-center mb-2">
+                                        <span className="text-sm text-gray-600">Payment Method:</span>
+                                        <span className="text-sm font-medium">
+                                          {order.paymentInfo?.method === 'card' ? '💳 Card Payment' : 
+                                           order.paymentInfo?.method === 'cod' ? '💵 Cash on Delivery' : 
+                                           order.paymentInfo?.method || 'Not specified'}
+                                        </span>
+                                      </div>
+                                      
+                                      {/* Card Payment Notice */}
+                                      {order.paymentInfo?.method === 'card' && (
+                                        <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
+                                          <div className="flex items-center text-sm text-green-700">
+                                            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                            Payment completed via card
+                                          </div>
+                                        </div>
+                                      )}
                                     </div>
                                   </div>
 
