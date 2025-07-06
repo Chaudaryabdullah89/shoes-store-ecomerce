@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import api from '../services/api';
 
 const Blog = () => {
   const [blogs, setBlogs] = useState([]);
@@ -17,7 +17,7 @@ const Blog = () => {
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const res = await axios.get('/api/blogs');
+        const res = await api.get('/blogs');
         const blogsData = res.data.blogs || res.data;
         setBlogs(blogsData);
         
@@ -63,10 +63,85 @@ const Blog = () => {
 
   if (loading)
     return (
-      <div className="min-h-screen flex items-center justify-center text-lg">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p>Loading blogs...</p>
+      <div className="font-sans bg-white min-h-screen">
+        {/* Hero Banner Skeleton */}
+        <div className="relative h-[300px] sm:h-[350px] md:h-[400px] w-full bg-gradient-to-r from-gray-200 to-gray-300 flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-pulse">
+              <div className="h-8 sm:h-12 md:h-16 bg-gray-300 rounded mb-4 w-64 sm:w-96 md:w-[500px] mx-auto"></div>
+              <div className="h-4 sm:h-6 md:h-8 bg-gray-300 rounded mb-6 w-80 sm:w-[400px] md:w-[600px] mx-auto"></div>
+              <div className="flex justify-center gap-4">
+                <div className="h-6 bg-gray-300 rounded-full w-20 animate-pulse"></div>
+                <div className="h-6 bg-gray-300 rounded-full w-24 animate-pulse"></div>
+                <div className="h-6 bg-gray-300 rounded-full w-20 animate-pulse"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Categories Section Skeleton */}
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+          <div className="text-center mb-6 sm:mb-8">
+            <div className="h-8 bg-gray-300 rounded mb-2 w-48 mx-auto animate-pulse"></div>
+            <div className="h-4 bg-gray-300 rounded w-64 mx-auto animate-pulse"></div>
+          </div>
+          <div className="flex flex-wrap justify-center gap-2 sm:gap-4">
+            {[1, 2, 3, 4, 5, 6].map(i => (
+              <div key={i} className="h-10 bg-gray-300 rounded-full w-24 animate-pulse"></div>
+            ))}
+          </div>
+        </div>
+
+        {/* Main Content Skeleton */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12 grid grid-cols-1 lg:grid-cols-4 gap-6 sm:gap-8">
+          {/* Blog Grid Skeleton */}
+          <div className="lg:col-span-3">
+            <div className="mb-4 sm:mb-6">
+              <div className="h-6 bg-gray-300 rounded mb-2 w-32 animate-pulse"></div>
+              <div className="h-4 bg-gray-300 rounded w-48 animate-pulse"></div>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
+              {[1, 2, 3, 4, 5, 6].map(i => (
+                <div key={i} className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm animate-pulse">
+                  <div className="h-40 sm:h-48 md:h-52 bg-gray-300"></div>
+                  <div className="p-4 sm:p-6">
+                    <div className="flex gap-2 mb-3">
+                      <div className="h-3 bg-gray-300 rounded w-16"></div>
+                      <div className="h-3 bg-gray-300 rounded w-20"></div>
+                      <div className="h-3 bg-gray-300 rounded w-16"></div>
+                    </div>
+                    <div className="h-5 bg-gray-300 rounded mb-3 w-3/4"></div>
+                    <div className="space-y-2 mb-4">
+                      <div className="h-3 bg-gray-300 rounded w-full"></div>
+                      <div className="h-3 bg-gray-300 rounded w-5/6"></div>
+                      <div className="h-3 bg-gray-300 rounded w-4/6"></div>
+                    </div>
+                    <div className="flex gap-2 mb-4">
+                      <div className="h-6 bg-gray-300 rounded-full w-16"></div>
+                      <div className="h-6 bg-gray-300 rounded-full w-20"></div>
+                    </div>
+                    <div className="h-8 bg-gray-300 rounded w-24"></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Sidebar Skeleton */}
+          <div className="lg:col-span-1">
+            <div className="h-6 bg-gray-300 rounded mb-4 w-32 animate-pulse"></div>
+            <div className="space-y-3 sm:space-y-5">
+              {[1, 2, 3, 4, 5, 6].map(i => (
+                <div key={i} className="flex items-start gap-2 sm:gap-3 p-2">
+                  <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gray-300 rounded-md animate-pulse"></div>
+                  <div className="flex-1">
+                    <div className="h-3 bg-gray-300 rounded mb-2 w-full animate-pulse"></div>
+                    <div className="h-3 bg-gray-300 rounded w-20 animate-pulse"></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -161,6 +236,11 @@ const Blog = () => {
                     }
                     alt={blog.title}
                     className="w-full h-40 sm:h-48 md:h-52 object-cover"
+                    loading="lazy"
+                    onError={e => {
+                      e.target.onerror = null;
+                      e.target.src = 'https://via.placeholder.com/600x300?text=No+Image';
+                    }}
                   />
                   {blog.featured && (
                     <div className="absolute top-2 sm:top-4 left-2 sm:left-4 bg-black text-white px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-xs font-bold">
@@ -243,6 +323,11 @@ const Blog = () => {
                   }
                   className="w-12 h-12 sm:w-16 sm:h-16 object-cover rounded-md"
                   alt="thumb"
+                  loading="lazy"
+                  onError={e => {
+                    e.target.onerror = null;
+                    e.target.src = 'https://via.placeholder.com/80x80?text=No+Image';
+                  }}
                 />
                 <div className="flex-1 min-w-0">
                   <h4 className="text-xs sm:text-sm font-semibold text-gray-800 line-clamp-2">

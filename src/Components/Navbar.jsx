@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
-import { useWishlist } from "../Context/WishlistContext";
+import { Link, useNavigate } from 'react-router-dom'
+import { useWishlist } from "../Context/WishlistContextProvider";
 import { useCart } from "../Context/CartContext";
 import { useAuth } from '../Context/useAuth';
 

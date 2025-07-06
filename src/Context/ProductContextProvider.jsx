@@ -10,9 +10,18 @@ export const ProductContextProvider = ({ children }) => {
 
   useEffect(() => {
     setLoading(true);
+    setError(null);
+    
     productService.getProducts()
-      .then(data => setProducts(data.products || data))
-      .catch(err => setError(err.message || 'Failed to fetch products'))
+      .then(data => {
+        const productsData = data.products || data || [];
+        setProducts(Array.isArray(productsData) ? productsData : []);
+      })
+      .catch(err => {
+        console.error('Failed to fetch products:', err);
+        setError(err.message || 'Failed to fetch products');
+        setProducts([]); // Set empty array as fallback
+      })
       .finally(() => setLoading(false));
   }, []);
 

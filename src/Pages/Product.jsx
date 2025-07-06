@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { useWishlist } from '../Context/WishlistContext';
+import { useWishlist } from '../Context/WishlistContextProvider';
 import { useCart } from '../Context/CartContext';
 import ProductCard from '../Components/ProductCard';
 import { productService } from '../services/productService';

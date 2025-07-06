@@ -1,24 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import axios from 'axios';
+import api from '../services/api';
 
 const BlogRead = () => {
   const { id } = useParams();
   const [blog, setBlog] = useState(null);
+  const [recentBlogs, setRecentBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [comments, setComments] = useState([]);
-  const [comment, setComment] = useState('');
-  const [commentError, setCommentError] = useState('');
-  const [showFullContent, setShowFullContent] = useState(false);
-  const [scrollProgress, setScrollProgress] = useState(0);
+  const [imageLoadingStates, setImageLoadingStates] = useState({});
 
   useEffect(() => {
     const fetchBlog = async () => {
       try {
-        const res = await axios.get(`/api/blogs/${id}`);
-        setBlog(res.data.blog || res.data);
-      } catch {
+        setLoading(true);
+        const [blogRes, recentRes] = await Promise.all([
+          api.get(`/blogs/${id}`),
+          api.get('/blogs?limit=5')
+        ]);
+        
+        setBlog(blogRes.data.blog || blogRes.data);
+        setRecentBlogs(recentRes.data.blogs || recentRes.data);
+      } catch (err) {
         setError('Failed to load blog post.');
       } finally {
         setLoading(false);
@@ -27,178 +30,235 @@ const BlogRead = () => {
     fetchBlog();
   }, [id]);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollTop = window.scrollY;
-      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-      const scrolled = (scrollTop / docHeight) * 100;
-      setScrollProgress(scrolled);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const handleCommentSubmit = (e) => {
-    e.preventDefault();
-    if (!comment.trim()) {
-      setCommentError('Comment cannot be empty.');
-      return;
-    }
-    setComments([
-      ...comments,
-      {
-        text: comment,
-        date: new Date(),
-        user: 'Guest',
-        avatar: `https://api.dicebear.com/7.x/initials/svg?seed=G${Math.floor(Math.random() * 1000)}`
-      }
-    ]);
-    setComment('');
-    setCommentError('');
+  const handleImageLoad = (imageId) => {
+    setImageLoadingStates(prev => ({
+      ...prev,
+      [imageId]: false
+    }));
   };
 
-  const formatDate = (date) =>
-    new Date(date).toLocaleDateString(undefined, {
-      year: 'numeric', month: 'long', day: 'numeric'
-    });
+  const handleImageError = (imageId) => {
+    setImageLoadingStates(prev => ({
+      ...prev,
+      [imageId]: false
+    }));
+  };
 
-  const formatTime = (date) =>
-    new Date(date).toLocaleTimeString(undefined, {
-      hour: '2-digit', minute: '2-digit'
-    });
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            {/* Main Content Skeleton */}
+            <div className="lg:col-span-3">
+              {/* Title Skeleton */}
+              <div className="mb-8">
+                <div className="h-8 bg-gray-300 rounded mb-4 w-3/4 animate-pulse"></div>
+                <div className="h-6 bg-gray-300 rounded mb-2 w-1/2 animate-pulse"></div>
+                <div className="h-4 bg-gray-300 rounded w-1/3 animate-pulse"></div>
+              </div>
 
-  const contentPreviewLength = 1200;
-  const isLongContent = blog?.content && blog.content.length > contentPreviewLength;
-  const displayedContent = showFullContent || !isLongContent
-    ? blog?.content
-    : blog?.content.slice(0, contentPreviewLength) + '...';
+              {/* Featured Image Skeleton */}
+              <div className="mb-8">
+                <div className="h-64 sm:h-80 md:h-96 bg-gray-300 rounded-lg animate-pulse"></div>
+              </div>
 
-  const coverImage = blog?.image?.url || blog?.image || 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80';
+              {/* Content Skeleton */}
+              <div className="prose prose-lg max-w-none">
+                <div className="space-y-4">
+                  {[1, 2, 3, 4, 5, 6].map(i => (
+                    <div key={i}>
+                      <div className="h-4 bg-gray-300 rounded w-full animate-pulse mb-2"></div>
+                      <div className="h-4 bg-gray-300 rounded w-5/6 animate-pulse mb-2"></div>
+                      <div className="h-4 bg-gray-300 rounded w-4/6 animate-pulse"></div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
 
-  if (loading) return <div className="flex items-center justify-center min-h-screen bg-white text-black">Loading blog post...</div>;
-  if (error) return <div className="flex items-center justify-center min-h-screen text-red-500 bg-white text-black">{error}</div>;
-  if (!blog) return <div className="flex items-center justify-center min-h-screen text-gray-500 bg-white text-black">Blog post not found.</div>;
-
-  return (
-    <div className="min-h-screen w-full bg-white text-black font-sans">
-      {/* Reading Progress Bar */}
-      <div className="fixed top-0 left-0 w-full h-1 bg-yellow-100 z-50">
-        <div
-          className="h-full bg-yellow-400 transition-all duration-200 ease-out"
-          style={{ width: `${scrollProgress}%` }}
-        />
-      </div>
-
-      {/* Breadcrumb Header */}
-      <header className="w-full border-b border-gray-200 bg-white">
-        <div className="max-w-7xl mx-auto px-4 py-6 flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-6">
-          <nav className="flex items-center text-sm text-gray-600 gap-2">
-            <Link to="/" className="hover:text-yellow-500 font-medium">Home</Link>
-            <span>/</span>
-            <Link to="/blog" className="hover:text-yellow-500 font-medium">Blog</Link>
-            <span>/</span>
-            <span className="text-black font-semibold truncate max-w-[400px]" title={blog.title}>{blog.title}</span>
-          </nav>
-        </div>
-      </header>
-
-      {/* Cover Image & Title */}
-      <div className="relative w-full h-[400px]">
-        <img src={coverImage} alt={blog.title} className="w-full h-full object-cover object-center" style={{ filter: 'brightness(0.6)' }} />
-        <div className="absolute bottom-0 left-0 w-full px-4 md:px-16 pb-10">
-          <h1 className="text-4xl md:text-6xl font-extrabold text-white bg-black/50 px-6 py-4 rounded-2xl inline-block">
-            {blog.title}
-          </h1>
-        </div>
-      </div>
-
-      {/* Main Content */}
-      <main className="max-w-4xl mx-auto px-4 md:px-0 mt-12">
-        <div className="flex flex-wrap gap-4 text-sm text-gray-600 mb-6">
-          {blog.category && <span className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full uppercase">{blog.category}</span>}
-          {blog.readTime && <span>{blog.readTime} min read</span>}
-          <span>{formatDate(blog.createdAt)}</span>
-        </div>
-
-        {/* Blog Body */}
-        <article className="prose prose-lg max-w-none text-black prose-headings:text-black prose-a:text-yellow-600 hover:prose-a:text-yellow-800">
-          <div dangerouslySetInnerHTML={{ __html: displayedContent }} />
-          {isLongContent && !showFullContent && (
-            <button
-              onClick={() => setShowFullContent(true)}
-              className="mt-4 text-yellow-600 underline hover:text-yellow-800 font-medium"
-            >
-              Read more
-            </button>
-          )}
-        </article>
-
-        {/* Scroll to Comments Button */}
-        <div className="mt-12 flex justify-center">
-          <button
-            onClick={() => document.getElementById('comments')?.scrollIntoView({ behavior: 'smooth' })}
-            className="px-6 py-3 bg-yellow-400 text-black rounded-full hover:bg-yellow-500 font-medium shadow-md transition"
-          >
-            Join the Conversation ↓
-          </button>
-        </div>
-
-        {/* Author Bio */}
-        <div className="mt-24 bg-yellow-50 border border-yellow-100 rounded-lg p-6 flex items-center gap-6">
-          <img
-            src={blog.author?.avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${blog.author?.name || 'Admin'}`}
-            alt="Author avatar"
-            className="w-20 h-20 rounded-full object-cover border-2 border-white shadow"
-          />
-          <div>
-            <h4 className="text-lg font-semibold text-yellow-900">{blog.author?.name || 'Admin'}</h4>
-            <p className="text-sm text-yellow-800 mt-1">Writer & storyteller passionate about knowledge sharing.</p>
+            {/* Sidebar Skeleton */}
+            <div className="lg:col-span-1">
+              <div className="sticky top-8">
+                <div className="h-6 bg-gray-300 rounded mb-6 w-32 animate-pulse"></div>
+                <div className="space-y-4">
+                  {[1, 2, 3, 4, 5].map(i => (
+                    <div key={i} className="flex gap-3 p-3 bg-gray-50 rounded-lg">
+                      <div className="w-16 h-16 bg-gray-300 rounded-md animate-pulse flex-shrink-0"></div>
+                      <div className="flex-1">
+                        <div className="h-3 bg-gray-300 rounded mb-2 w-full animate-pulse"></div>
+                        <div className="h-3 bg-gray-300 rounded mb-1 w-3/4 animate-pulse"></div>
+                        <div className="h-3 bg-gray-300 rounded w-1/2 animate-pulse"></div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-6">
+                  <div className="h-10 bg-gray-300 rounded w-full animate-pulse"></div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
+      </div>
+    );
+  }
 
-        {/* Comments Section */}
-        <section id="comments" className="mt-20">
-          <h2 className="text-2xl font-bold mb-4">Comments</h2>
-          <form onSubmit={handleCommentSubmit} className="mb-10 bg-gray-50 p-6 rounded-lg border">
-            <textarea
-              value={comment}
-              onChange={e => setComment(e.target.value)}
-              rows={3}
-              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-300 text-base resize-none"
-              placeholder="Write a comment..."
-              maxLength={500}
-            />
-            <div className="flex justify-between items-center mt-2">
-              <span className="text-xs text-gray-400">{comment.length}/500</span>
-              {commentError && <span className="text-red-500 text-xs">{commentError}</span>}
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-red-600">
+        <div className="text-center">
+          <div className="text-6xl mb-4">📝</div>
+          <h2 className="text-2xl font-bold mb-2">Oops!</h2>
+          <p>{error}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!blog) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-6xl mb-4">🔍</div>
+          <h2 className="text-2xl font-bold mb-2">Blog not found</h2>
+          <p className="text-gray-600 mb-4">The blog post you're looking for doesn't exist.</p>
+          <Link to="/blog" className="bg-black text-white px-6 py-2 rounded-lg hover:bg-gray-800 transition-colors">
+            Back to Blog
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+          {/* Main Content */}
+          <div className="lg:col-span-3">
+            {/* Title */}
+            <div className="mb-8">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4 text-center capitalize">
+                {blog.title}
+              </h1>
+              <div className="flex items-center justify-center gap-4 text-sm text-gray-500 mb-6">
+                <span>📅 {new Date(blog.createdAt).toLocaleDateString()}</span>
+                <span>👁️ {blog.views || 0} views</span>
+                {blog.author && <span>✍️ {blog.author}</span>}
+              </div>
+              <div className="flex flex-wrap justify-center gap-2 mb-6">
+                {blog.tags?.map((tag, index) => (
+                  <span
+                    key={index}
+                    className="px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-full"
+                  >
+                    #{tag}
+                  </span>
+                ))}
+              </div>
             </div>
-            <button type="submit" className="mt-4 bg-yellow-400 text-black px-6 py-2 rounded hover:bg-yellow-500 font-medium">
-              Post Comment
-            </button>
-          </form>
 
-          {comments.length === 0 ? (
-            <p className="text-gray-500">No comments yet.</p>
-          ) : (
-            <div className="space-y-4">
-              {comments.map((c, i) => (
-                <div key={i} className="flex gap-4 bg-gray-50 p-4 rounded border">
+            {/* Featured Image */}
+            {blog.image && (
+              <div className="mb-8">
+                <div className="relative h-64 sm:h-80 md:h-96 bg-gray-200 rounded-lg overflow-hidden">
+                  {imageLoadingStates[blog._id] !== false && (
+                    <div className="absolute inset-0 bg-gray-200 animate-pulse">
+                      <div className="w-full h-full flex items-center justify-center">
+                        <div className="w-16 h-16 bg-gray-300 rounded-full animate-pulse"></div>
+                      </div>
+                    </div>
+                  )}
+                  
                   <img
-                    src={c.avatar}
-                    alt="User avatar"
-                    className="w-10 h-10 rounded-full border"
+                    src={blog.image}
+                    alt={blog.title}
+                    className={`w-full h-full object-cover transition-opacity duration-300 ${
+                      imageLoadingStates[blog._id] !== false ? 'opacity-0' : 'opacity-100'
+                    }`}
+                    loading="lazy"
+                    onLoad={() => handleImageLoad(blog._id)}
+                    onError={() => handleImageError(blog._id)}
                   />
-                  <div>
-                    <div className="text-sm font-semibold text-black">{c.user}</div>
-                    <div className="text-xs text-gray-500">{formatDate(c.date)} at {formatTime(c.date)}</div>
-                    <p className="text-sm mt-1">{c.text}</p>
-                  </div>
                 </div>
-              ))}
+              </div>
+            )}
+
+            {/* Content */}
+            <div 
+              className="prose prose-lg max-w-none prose-headings:text-gray-900 prose-p:text-gray-700 prose-strong:text-gray-900 prose-a:text-blue-600 prose-blockquote:border-l-blue-500 prose-code:bg-gray-100 prose-code:text-gray-800 prose-pre:bg-gray-900 prose-pre:text-gray-100"
+              dangerouslySetInnerHTML={{ __html: blog.content }}
+            />
+          </div>
+
+          {/* Sidebar */}
+          <div className="lg:col-span-1">
+            <div className="sticky top-8">
+              <h3 className="text-xl font-bold text-gray-900 mb-6">Latest Posts</h3>
+              <div className="space-y-4">
+                {recentBlogs
+                  .filter(recentBlog => recentBlog._id !== blog._id)
+                  .slice(0, 5)
+                  .map((recentBlog) => (
+                    <Link
+                      key={recentBlog._id}
+                      to={`/blog/${recentBlog._id}`}
+                      className="flex gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                    >
+                      <div className="relative w-16 h-16 bg-gray-200 rounded-md overflow-hidden flex-shrink-0">
+                        {imageLoadingStates[recentBlog._id] !== false && (
+                          <div className="absolute inset-0 bg-gray-200 animate-pulse">
+                            <div className="w-full h-full flex items-center justify-center">
+                              <div className="w-6 h-6 bg-gray-300 rounded-full animate-pulse"></div>
+                            </div>
+                          </div>
+                        )}
+                        
+                        <img
+                          src={recentBlog.image || '/placeholder-image.jpg'}
+                          alt={recentBlog.title}
+                          className={`w-full h-full object-cover transition-opacity duration-300 ${
+                            imageLoadingStates[recentBlog._id] !== false ? 'opacity-0' : 'opacity-100'
+                          }`}
+                          loading="lazy"
+                          onLoad={() => handleImageLoad(recentBlog._id)}
+                          onError={() => handleImageError(recentBlog._id)}
+                        />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-medium text-gray-900 text-sm line-clamp-2 mb-1">
+                          {recentBlog.title}
+                        </h4>
+                        <p className="text-xs text-gray-500 mb-1">
+                          {new Date(recentBlog.createdAt).toLocaleDateString()}
+                        </p>
+                        <div className="flex flex-wrap gap-1">
+                          {recentBlog.tags?.slice(0, 2).map((tag, index) => (
+                            <span
+                              key={index}
+                              className="px-2 py-0.5 bg-gray-200 text-gray-600 text-xs rounded-full"
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+              </div>
+              <div className="mt-6">
+                <Link
+                  to="/blog"
+                  className="block w-full bg-black text-white py-3 px-4 rounded-lg text-center font-medium hover:bg-gray-800 transition-colors"
+                >
+                  View All Posts
+                </Link>
+              </div>
             </div>
-          )}
-        </section>
-      </main>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

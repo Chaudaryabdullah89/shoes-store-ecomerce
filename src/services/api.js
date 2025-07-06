@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Create axios instance
 const api = axios.create({
-  baseURL: 'https://shoes-backend-2352.vercel.app/api',
+  baseURL: import.meta.env.VITE_API_URL || 'https://shoes-backend-2352.vercel.app/api',
   headers: {
     'Content-Type': 'application/json',
   },

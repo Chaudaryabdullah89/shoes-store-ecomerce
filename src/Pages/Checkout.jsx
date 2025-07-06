@@ -457,12 +457,135 @@ const CheckoutForm = ({ cart, user, clearCart, navigate }) => {
 
 const Checkout = () => {
   const { cart, clearCart } = useCart();
-  const navigate = useNavigate();
   const { user } = useAuth();
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulate loading time for better UX
+    const timer = setTimeout(() => setLoading(false), 500);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (cart.length === 0) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-6xl mb-4">🛒</div>
+          <h2 className="text-2xl font-bold mb-2">Your cart is empty</h2>
+          <p className="text-gray-600 mb-4">Add some products to proceed to checkout.</p>
+          <button
+            onClick={() => navigate('/shop')}
+            className="bg-black text-white px-6 py-2 rounded-lg hover:bg-gray-800 transition-colors"
+          >
+            Continue Shopping
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+          {/* Header Skeleton */}
+          <div className="mb-8">
+            <div className="h-8 bg-gray-300 rounded mb-4 w-64 animate-pulse"></div>
+            <div className="h-4 bg-gray-300 rounded w-96 animate-pulse"></div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Main Form Skeleton */}
+            <div className="lg:col-span-2">
+              {/* Stepper Skeleton */}
+              <div className="mb-8">
+                <div className="flex items-center justify-between mb-6">
+                  {[1, 2, 3, 4].map(i => (
+                    <div key={i} className="flex items-center">
+                      <div className="w-8 h-8 bg-gray-300 rounded-full animate-pulse"></div>
+                      {i < 4 && <div className="w-16 h-1 bg-gray-300 mx-2 animate-pulse"></div>}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Form Sections Skeleton */}
+              <div className="space-y-8">
+                {[1, 2, 3].map(section => (
+                  <div key={section} className="bg-white p-6 rounded-lg shadow-sm">
+                    <div className="h-6 bg-gray-300 rounded mb-6 w-48 animate-pulse"></div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {[1, 2, 3, 4, 5, 6].map(field => (
+                        <div key={field}>
+                          <div className="h-4 bg-gray-300 rounded mb-2 w-24 animate-pulse"></div>
+                          <div className="h-10 bg-gray-300 rounded animate-pulse"></div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Navigation Buttons Skeleton */}
+              <div className="flex justify-between mt-8">
+                <div className="h-10 bg-gray-300 rounded w-24 animate-pulse"></div>
+                <div className="h-10 bg-gray-300 rounded w-24 animate-pulse"></div>
+              </div>
+            </div>
+
+            {/* Order Summary Skeleton */}
+            <div className="lg:col-span-1">
+              <div className="bg-white p-6 rounded-lg shadow-sm sticky top-8">
+                <div className="h-6 bg-gray-300 rounded mb-6 w-32 animate-pulse"></div>
+                
+                {/* Cart Items Skeleton */}
+                <div className="space-y-4 mb-6">
+                  {[1, 2, 3].map(item => (
+                    <div key={item} className="flex gap-3">
+                      <div className="w-16 h-16 bg-gray-300 rounded animate-pulse flex-shrink-0"></div>
+                      <div className="flex-1">
+                        <div className="h-4 bg-gray-300 rounded mb-2 w-3/4 animate-pulse"></div>
+                        <div className="h-3 bg-gray-300 rounded mb-1 w-1/2 animate-pulse"></div>
+                        <div className="h-3 bg-gray-300 rounded w-1/3 animate-pulse"></div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Summary Lines Skeleton */}
+                <div className="space-y-3 mb-6">
+                  {[1, 2, 3, 4].map(line => (
+                    <div key={line} className="flex justify-between">
+                      <div className="h-4 bg-gray-300 rounded w-20 animate-pulse"></div>
+                      <div className="h-4 bg-gray-300 rounded w-16 animate-pulse"></div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Total Skeleton */}
+                <div className="border-t pt-4">
+                  <div className="flex justify-between">
+                    <div className="h-6 bg-gray-300 rounded w-16 animate-pulse"></div>
+                    <div className="h-6 bg-gray-300 rounded w-20 animate-pulse"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <Elements stripe={stripePromise}>
-      <CheckoutForm cart={cart} user={user} clearCart={clearCart} navigate={navigate} />
+      <CheckoutForm 
+        cart={cart} 
+        user={user} 
+        clearCart={clearCart} 
+        navigate={navigate} 
+      />
     </Elements>
   );
 };

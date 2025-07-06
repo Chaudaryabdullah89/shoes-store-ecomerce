@@ -1,204 +1,196 @@
-import React, { useState } from "react";
-import { useCart } from "../Context/CartContext";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from 'react';
+import { useCart } from '../Context/CartContext';
+import { X, Trash2, ShoppingBag, ArrowRight, Minus, Plus } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
-const FREE_SHIPPING_THRESHOLD = 600;
+const CartDrawer = ({ isOpen, onClose }) => {
+  const { cart, removeFromCart, updateQuantity, clearCart } = useCart();
+  const [imageLoadingStates, setImageLoadingStates] = useState({});
 
-const CartDrawer = () => {
-  const cartContext = useCart();
-  const navigate = useNavigate();
-  const [orderNote, setOrderNote] = useState("");
-  const [coupon, setCoupon] = useState("");
+  const handleImageLoad = (itemId) => {
+    setImageLoadingStates(prev => ({
+      ...prev,
+      [itemId]: false
+    }));
+  };
 
-  // Add null check for cartContext
-  if (!cartContext) {
-    return (
-      <div className="fixed top-0 right-0 h-full w-full sm:w-[400px] bg-white shadow-2xl z-50 flex flex-col">
-        <div className="flex justify-between items-center p-4 sm:p-6 border-b">
-          <h2 className="text-xl sm:text-2xl font-bold">Shopping Cart</h2>
-          <button className="text-gray-500 hover:text-gray-700">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 sm:h-7 sm:w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
-        <div className="flex-1 flex items-center justify-center">
-          <p className="text-gray-500 text-center text-sm sm:text-base">Loading cart...</p>
-        </div>
-      </div>
-    );
-  }
+  const handleImageError = (itemId) => {
+    setImageLoadingStates(prev => ({
+      ...prev,
+      [itemId]: false
+    }));
+  };
 
-  const { cart, removeFromCart, updateItemQuantity, getCartTotals } = cartContext;
-  const totals = getCartTotals();
-  const amountToFreeShipping = Math.max(0, FREE_SHIPPING_THRESHOLD - totals.subtotal);
-  const shippingProgress = Math.min(100, (totals.subtotal / FREE_SHIPPING_THRESHOLD) * 100);
+  const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+  const subtotal = cart.reduce((sum, item) => {
+    const price = item.discount > 0 
+      ? item.price * (1 - item.discount / 100) 
+      : item.price;
+    return sum + (price * item.quantity);
+  }, 0);
+
+  const shipping = subtotal > 50 ? 0 : 5.99;
+  const total = subtotal + shipping;
+
+  if (!isOpen) return null;
 
   return (
-    <div
-      className={`fixed top-0 right-0 h-full w-full sm:w-[400px] bg-white shadow-2xl z-50 flex flex-col transition-transform duration-300 translate-x-full`}
-    >
-      {/* Header - Mobile optimized */}
-      <div className="flex justify-between items-center p-4 sm:p-6 border-b bg-white sticky top-0 z-10">
-        <h2 className="text-lg sm:text-xl lg:text-2xl font-bold">Shopping Cart</h2>
-        <button className="text-gray-500 hover:text-gray-700 p-2 rounded-full hover:bg-gray-100 transition-colors">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-      </div>
-
-      {/* Free Shipping Progress - Mobile optimized */}
-      <div className="px-4 sm:px-6 pt-4 bg-gray-50">
-        <div className="text-xs sm:text-sm mb-3 text-center">
-          {amountToFreeShipping > 0
-            ? <>Buy <b>${amountToFreeShipping.toFixed(2)} USD</b> more to enjoy <b>FREE shipping</b></>
-            : <>You have free shipping!</>
-          }
-        </div>
-        <div className="w-full h-3 bg-gray-200 rounded-full flex items-center relative">
-          <div
-            className="h-3 bg-green-500 rounded-full transition-all duration-300"
-            style={{ width: `${shippingProgress}%` }}
-          />
-          <div className="w-6 h-6 bg-white border-2 border-green-500 rounded-full flex items-center justify-center -ml-3 z-10 absolute right-0">
-            <span className="text-xs font-bold text-green-600">✓</span>
+    <div className="fixed inset-0 z-50 overflow-hidden">
+      {/* Backdrop */}
+      <div 
+        className="absolute inset-0 bg-black bg-opacity-50 transition-opacity"
+        onClick={onClose}
+      />
+      
+      {/* Drawer */}
+      <div className="absolute right-0 top-0 h-full w-full max-w-md bg-white shadow-xl transform transition-transform duration-300 ease-in-out">
+        {/* Header */}
+        <div className="flex items-center justify-between p-4 border-b border-gray-200">
+          <div className="flex items-center gap-2">
+            <ShoppingBag size={24} />
+            <h2 className="text-xl font-semibold">Shopping Cart</h2>
+            <span className="bg-black text-white text-xs px-2 py-1 rounded-full">
+              {totalItems}
+            </span>
           </div>
+          <button
+            onClick={onClose}
+            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+          >
+            <X size={20} />
+          </button>
         </div>
-      </div>
 
-      {/* Cart Items - Mobile optimized */}
-      <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-4">
-        {!Array.isArray(cart) || cart.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-full text-center">
-            <svg className="w-16 h-16 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-            </svg>
-            <p className="text-gray-500 text-lg font-medium mb-2">Your cart is empty</p>
-            <p className="text-gray-400 text-sm">Add some items to get started</p>
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {cart.map((item) => {
-              // Ensure price is a number and has a fallback
-              const itemPrice = typeof item.price === 'number' ? item.price : 0;
-              const itemName = item.name || 'Product';
-              const itemImage = item.image || 'https://via.placeholder.com/80x80?text=No+Image';
-              const itemId = item.id || item._id; // Use either id or _id
-              const itemQuantity = item.quantity || item.qty || 1; // Use either quantity or qty
-              
-              return (
-                <div key={itemId} className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
-                  <div className="flex gap-3 sm:gap-4">
-                    <img 
-                      src={itemImage} 
-                      alt={itemName} 
-                      className="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-lg bg-gray-50" 
-                    />
-                    <div className="flex-1 min-w-0">
-                      <div className="font-semibold text-sm sm:text-base truncate mb-1">{itemName}</div>
-                      <div className="text-black font-bold text-sm sm:text-base mb-2">${itemPrice.toFixed(2)}</div>
-                      <div className="text-xs text-gray-500 mb-3">
-                        {item.color && <span className="inline-block bg-gray-100 px-2 py-1 rounded mr-2">Color: {item.color}</span>}
-                        {item.size && <span className="inline-block bg-gray-100 px-2 py-1 rounded">Size: {item.size}</span>}
+        {/* Cart Items */}
+        <div className="flex-1 overflow-y-auto p-4">
+          {cart.length === 0 ? (
+            <div className="text-center py-8">
+              <div className="text-6xl mb-4">🛒</div>
+              <h3 className="text-lg font-semibold mb-2">Your cart is empty</h3>
+              <p className="text-gray-500 mb-6">Add some products to get started!</p>
+              <button
+                onClick={onClose}
+                className="bg-black text-white px-6 py-2 rounded-lg hover:bg-gray-800 transition-colors"
+              >
+                Start Shopping
+              </button>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {cart.map((item) => (
+                <div key={`${item._id}-${item.selectedSize}-${item.selectedColor}`} className="flex gap-3 p-3 bg-gray-50 rounded-lg">
+                  {/* Product Image */}
+                  <div className="relative w-20 h-20 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0">
+                    {imageLoadingStates[item._id] !== false && (
+                      <div className="absolute inset-0 bg-gray-200 animate-pulse">
+                        <div className="w-full h-full flex items-center justify-center">
+                          <div className="w-8 h-8 bg-gray-300 rounded-full animate-pulse"></div>
+                        </div>
                       </div>
-                      
-                      {/* Quantity Controls - Mobile optimized */}
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <button
-                            className="w-8 h-8 sm:w-10 sm:h-10 border border-gray-300 rounded-lg flex items-center justify-center text-lg hover:bg-gray-100 transition-colors"
-                            onClick={() => updateItemQuantity(itemId, Math.max(1, itemQuantity - 1))}
-                          >
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
-                            </svg>
-                          </button>
-                          <span className="w-8 sm:w-10 text-center text-sm sm:text-base font-semibold">{itemQuantity}</span>
-                          <button
-                            className="w-8 h-8 sm:w-10 sm:h-10 border border-gray-300 rounded-lg flex items-center justify-center text-lg hover:bg-gray-100 transition-colors"
-                            onClick={() => updateItemQuantity(itemId, itemQuantity + 1)}
-                          >
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                            </svg>
-                          </button>
+                    )}
+                    
+                    <img
+                      src={item.images?.[0] || '/placeholder-image.jpg'}
+                      alt={item.name}
+                      className={`w-full h-full object-cover transition-opacity duration-300 ${
+                        imageLoadingStates[item._id] !== false ? 'opacity-0' : 'opacity-100'
+                      }`}
+                      loading="lazy"
+                      onLoad={() => handleImageLoad(item._id)}
+                      onError={() => handleImageError(item._id)}
+                    />
+                  </div>
+
+                  {/* Product Details */}
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-medium text-gray-900 truncate">{item.name}</h3>
+                    <p className="text-sm text-gray-500">
+                      Size: {item.selectedSize} | Color: {item.selectedColor}
+                    </p>
+                    <div className="flex items-center justify-between mt-2">
+                      <div className="flex items-center gap-1">
+                        <button
+                          onClick={() => updateQuantity(item._id, item.selectedSize, item.selectedColor, Math.max(1, item.quantity - 1))}
+                          className="p-1 hover:bg-gray-200 rounded"
+                        >
+                          <Minus size={14} />
+                        </button>
+                        <span className="px-2 text-sm">{item.quantity}</span>
+                        <button
+                          onClick={() => updateQuantity(item._id, item.selectedSize, item.selectedColor, item.quantity + 1)}
+                          className="p-1 hover:bg-gray-200 rounded"
+                        >
+                          <Plus size={14} />
+                        </button>
+                      </div>
+                      <div className="text-right">
+                        <div className="font-medium text-gray-900">
+                          ${item.discount > 0 
+                            ? (item.price * (1 - item.discount / 100) * item.quantity).toFixed(2)
+                            : (item.price * item.quantity).toFixed(2)
+                          }
                         </div>
-                        
-                        <div className="text-right">
-                          <div className="font-bold text-sm sm:text-base">${(itemPrice * itemQuantity).toFixed(2)}</div>
-                          <button
-                            className="text-xs text-red-500 hover:text-red-700 underline mt-1"
-                            onClick={() => removeFromCart(itemId)}
-                          >
-                            Remove
-                          </button>
-                        </div>
+                        {item.discount > 0 && (
+                          <div className="text-xs text-gray-500 line-through">
+                            ${(item.price * item.quantity).toFixed(2)}
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
+
+                  {/* Remove Button */}
+                  <button
+                    onClick={() => removeFromCart(item._id, item.selectedSize, item.selectedColor)}
+                    className="p-1 text-gray-400 hover:text-red-500 transition-colors"
+                  >
+                    <Trash2 size={16} />
+                  </button>
                 </div>
-              );
-            })}
-          </div>
-        )}
-      </div>
-
-      {/* Order Note, Coupon, Shipping - Mobile optimized */}
-      <div className="px-4 sm:px-6 py-4 border-t bg-gray-50">
-        <div className="space-y-3">
-          <input
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            placeholder="Add order note..."
-            value={orderNote}
-            onChange={e => setOrderNote(e.target.value)}
-          />
-          <input
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            placeholder="Enter coupon code..."
-            value={coupon}
-            onChange={e => setCoupon(e.target.value)}
-          />
+              ))}
+            </div>
+          )}
         </div>
-      </div>
 
-      {/* Total and Actions - Mobile optimized */}
-      <div className="px-4 sm:px-6 py-4 border-t bg-white">
-        <div className="space-y-3 mb-4">
-          <div className="flex justify-between text-sm">
-            <span>Subtotal</span>
-            <span>${(totals.subtotal || 0).toFixed(2)}</span>
-          </div>
-          <div className="flex justify-between text-sm">
-            <span>Tax</span>
-            <span>${(totals.tax || 0).toFixed(2)}</span>
-          </div>
-          <div className="flex justify-between text-sm">
-            <span>Shipping</span>
-            <span>{totals.shipping === 0 ? 'FREE' : `$${totals.shipping.toFixed(2)}`}</span>
-          </div>
-          <div className="border-t pt-2">
-            <div className="flex justify-between font-bold text-lg">
-              <span>Total</span>
-              <span>${(totals.total || 0).toFixed(2)}</span>
+        {/* Footer */}
+        {cart.length > 0 && (
+          <div className="border-t border-gray-200 p-4">
+            {/* Summary */}
+            <div className="space-y-2 mb-4">
+              <div className="flex justify-between text-sm">
+                <span>Subtotal ({totalItems} items)</span>
+                <span>${subtotal.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span>Shipping</span>
+                <span>{shipping === 0 ? 'Free' : `$${shipping.toFixed(2)}`}</span>
+              </div>
+              <div className="border-t pt-2 flex justify-between font-semibold">
+                <span>Total</span>
+                <span>${total.toFixed(2)}</span>
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="space-y-2">
+              <Link
+                to="/cart"
+                onClick={onClose}
+                className="block w-full bg-gray-100 text-gray-900 py-3 px-4 rounded-lg text-center font-medium hover:bg-gray-200 transition-colors"
+              >
+                View Cart
+              </Link>
+              <Link
+                to="/checkout"
+                onClick={onClose}
+                className="block w-full bg-black text-white py-3 px-4 rounded-lg text-center font-medium hover:bg-gray-800 transition-colors flex items-center justify-center gap-2"
+              >
+                Checkout
+                <ArrowRight size={16} />
+              </Link>
             </div>
           </div>
-        </div>
-        
-        <div className="space-y-3">
-          <button 
-            onClick={() => navigate('/checkout')}
-            className="w-full bg-black text-white py-3 sm:py-4 rounded-lg font-bold hover:bg-gray-900 transition-colors text-sm sm:text-base"
-          >
-            Check Out
-          </button>
-          <button 
-            onClick={() => navigate('/cart')}
-            className="w-full border-2 border-black text-black py-3 sm:py-4 rounded-lg font-bold hover:bg-gray-100 transition-colors text-sm sm:text-base"
-          >
-            View Cart
-          </button>
-        </div>
+        )}
       </div>
     </div>
   );

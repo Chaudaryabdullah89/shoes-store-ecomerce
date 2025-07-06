@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { WishlistContext, useWishlist } from "./WishlistContextProvider";
+import { WishlistContext } from "./WishlistContextProvider";
 import { wishlistService } from '../services/wishlistService';
 import { useAuth } from './useAuth';
-
-export { useWishlist };
 
 export const WishlistProvider = ({ children }) => {
   const { user, token } = useAuth();
@@ -71,8 +69,13 @@ export const WishlistProvider = ({ children }) => {
     }
   };
 
+  // Check if item is in wishlist
+  const isInWishlist = (id) => {
+    return wishlist.some((item) => item._id === id || item.id === id);
+  };
+
   return (
-    <WishlistContext.Provider value={{ wishlist, addToWishlist, removeFromWishlist, loading }}>
+    <WishlistContext.Provider value={{ wishlist, addToWishlist, removeFromWishlist, isInWishlist, loading }}>
       {children}
     </WishlistContext.Provider>
   );

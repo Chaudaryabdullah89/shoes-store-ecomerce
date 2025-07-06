@@ -137,16 +137,15 @@ const ProductCard = ({ product, addToWishlist, addToCart, setQuickViewProduct, s
           <svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor' className='w-4 h-4 sm:w-5 sm:h-5'><path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M15 12a3 3 0 11-6 0 3 3 0 016 0zm6 0c0 5-9 9-9 9s-9-4-9-9a9 9 0 0118 0z' /></svg>
         </button>
       </div>
-      {/* Quick Cart Bottom Sheet inside card - Mobile optimized */}
+      {/* Quick Cart Bottom Sheet inside card */}
       {quickCartOpen && (
         <div className="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 rounded-b-lg shadow-lg z-10 animate-rollInUp">
-          <div className="space-y-4">
-            {/* Header */}
-            <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+          <div className="space-y-3">
+            <div className="flex items-center gap-3 p-2 bg-gray-50 rounded-lg">
               <img
-                src={product.images?.[0]?.url || product.image || "https://via.placeholder.com/60x60?text=No+Image"}
+                src={product.images[0].url}
                 alt={product.name}
-                className="w-12 h-12 object-contain rounded-lg bg-white"
+                className="w-12 h-12 object-contain"
               />
               <div className="flex-1">
                 <h4 className="font-semibold font-['Montserrat'] text-sm">{product.name}</h4>
@@ -156,24 +155,24 @@ const ProductCard = ({ product, addToWishlist, addToCart, setQuickViewProduct, s
               </div>
               <button
                 onClick={() => setQuickCartOpen(false)}
-                className="text-gray-500 hover:text-gray-700 p-1 rounded-full hover:bg-gray-200 transition-colors"
+                className="text-gray-500 hover:text-gray-700"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
             </div>
-            
-            {/* Color Selection - Mobile optimized */}
+            {/* Color Selection */}
             {Array.isArray(product.colors) && product.colors.length > 0 && (
               <div>
-                <label className="block text-sm font-semibold mb-2">Color:</label>
+                <label className="block text-xs font-semibold mb-1">Color:</label>
                 <div className="flex gap-2 flex-wrap">
                   {product.colors.map((color, idx) => (
                     <button
                       key={color.name || idx}
                       type="button"
-                      className={`px-3 py-2 rounded-lg border text-sm capitalize transition-all min-w-[60px] ${selectedColor === color ? 'border-yellow-600 bg-yellow-50 text-yellow-800' : 'border-gray-200 bg-gray-50 hover:border-gray-300 hover:bg-gray-100'}`}
+                      className={`px-3 py-1 rounded border text-xs capitalize ${selectedColor === color ? 'border-yellow-600 bg-yellow-50' : 'border-gray-200 bg-gray-50'}`}
+                      style={{ background: color.value }}
                       onClick={() => setSelectedColor(color)}
                     >
                       <span className="capitalize">{color.name}</span>
@@ -182,17 +181,16 @@ const ProductCard = ({ product, addToWishlist, addToCart, setQuickViewProduct, s
                 </div>
               </div>
             )}
-            
-            {/* Size Selection - Mobile optimized */}
+            {/* Size Selection */}
             {Array.isArray(product.sizes) && product.sizes.length > 0 && (
               <div>
-                <label className="block text-sm font-semibold mb-2">Size:</label>
+                <label className="block text-xs font-semibold mb-1">Size:</label>
                 <div className="flex gap-2 flex-wrap">
                   {product.sizes.map((size, idx) => (
                     <button
                       key={size.name || size || idx}
                       type="button"
-                      className={`px-3 py-2 rounded-lg border text-sm capitalize transition-all min-w-[50px] ${selectedSize === size ? 'border-yellow-600 bg-yellow-50 text-yellow-800' : 'border-gray-200 bg-gray-50 hover:border-gray-300 hover:bg-gray-100'}`}
+                      className={`px-3 py-1 rounded border text-xs capitalize ${selectedSize === size ? 'border-yellow-600 bg-yellow-50' : 'border-gray-200 bg-gray-50'}`}
                       onClick={() => setSelectedSize(size)}
                     >
                       {size.name || size}
@@ -201,30 +199,25 @@ const ProductCard = ({ product, addToWishlist, addToCart, setQuickViewProduct, s
                 </div>
               </div>
             )}
-            
-            {/* Quantity and Total - Mobile optimized */}
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <label className="text-sm font-semibold">Qty:</label>
-                <div className="flex items-center gap-2">
-                  <button
-                    className="w-8 h-8 border border-gray-300 rounded-lg flex items-center justify-center hover:bg-gray-100 transition-colors"
-                    onClick={() => setQuickCartQty(q => Math.max(1, q - 1))}
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
-                    </svg>
-                  </button>
-                  <span className="w-8 text-center font-semibold text-sm">{quickCartQty}</span>
-                  <button
-                    className="w-8 h-8 border border-gray-300 rounded-lg flex items-center justify-center hover:bg-gray-100 transition-colors"
-                    onClick={() => setQuickCartQty(q => q + 1)}
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                    </svg>
-                  </button>
-                </div>
+              <div className="flex items-center gap-2">
+                <button
+                  className="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center hover:bg-gray-300"
+                  onClick={() => setQuickCartQty(q => Math.max(1, q - 1))}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+                  </svg>
+                </button>
+                <span className="w-8 text-center font-semibold text-sm">{quickCartQty}</span>
+                <button
+                  className="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center hover:bg-gray-300"
+                  onClick={() => setQuickCartQty(q => q + 1)}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  </svg>
+                </button>
               </div>
               <div className="text-right">
                 <p className="text-xs text-gray-600">Total:</p>
@@ -233,17 +226,15 @@ const ProductCard = ({ product, addToWishlist, addToCart, setQuickViewProduct, s
                 </p>
               </div>
             </div>
-            
-            {/* Action Buttons - Mobile optimized */}
-            <div className="flex gap-3">
+            <div className="flex gap-2">
               <button
                 onClick={() => setQuickCartOpen(false)}
-                className="flex-1 bg-gray-200 text-gray-800 py-3 px-4 rounded-lg text-sm font-semibold font-['Montserrat'] hover:bg-gray-300 transition-colors"
+                className="flex-1 bg-gray-200 text-gray-800 py-2 px-3 rounded text-xs font-semibold font-['Montserrat'] hover:bg-gray-300 transition-colors"
               >
-                Continue Shopping
+                Continue
               </button>
               <button
-                className="flex-1 bg-yellow-400 text-white py-3 px-4 rounded-lg text-sm font-semibold font-['Montserrat'] hover:bg-yellow-500 transition-colors"
+                className="flex-1 bg-yellow-400 text-white py-2 px-3 rounded text-xs font-semibold font-['Montserrat'] hover:bg-yellow-500 transition-colors"
                 onClick={() => {
                   if ((Array.isArray(product.colors) && product.colors.length > 0 && !selectedColor) || (Array.isArray(product.sizes) && product.sizes.length > 0 && !selectedSize)) {
                     toast.error('Please select a color and size.');

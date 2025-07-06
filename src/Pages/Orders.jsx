@@ -96,11 +96,92 @@ const Orders = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-4">
-        <div className="text-center bg-white rounded-2xl shadow-lg p-8 max-w-sm w-full">
-          <div className="animate-spin rounded-full h-16 w-16 border-4 border-gray-200 border-t-black mx-auto mb-6"></div>
-          <p className="text-gray-600 text-lg font-medium">Loading your orders...</p>
-          <p className="text-gray-400 text-sm mt-2">Please wait while we fetch your order history</p>
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-4 sm:py-6 lg:py-8">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Header Skeleton */}
+          <div className="text-center mb-6 sm:mb-8">
+            <div className="h-8 sm:h-10 lg:h-12 bg-gray-300 rounded mb-3 sm:mb-4 w-48 sm:w-64 animate-pulse"></div>
+            <div className="h-4 sm:h-5 lg:h-6 bg-gray-300 rounded w-64 sm:w-80 animate-pulse"></div>
+          </div>
+
+          {/* Filter Tabs Skeleton */}
+          <div className="flex flex-wrap justify-center gap-2 mb-6 sm:mb-8">
+            {[1, 2, 3, 4, 5].map(i => (
+              <div key={i} className="h-8 sm:h-10 bg-gray-300 rounded-lg sm:rounded-xl w-20 sm:w-24 animate-pulse"></div>
+            ))}
+          </div>
+
+          {/* Orders List Skeleton */}
+          <div className="space-y-4 sm:space-y-6">
+            {[1, 2, 3, 4, 5].map(orderIndex => (
+              <div key={orderIndex} className="bg-white rounded-xl sm:rounded-2xl shadow-lg overflow-hidden border border-gray-100">
+                {/* Order Header Skeleton */}
+                <div className="p-4 sm:p-6 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
+                  <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 sm:gap-4">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 sm:gap-3 mb-2">
+                        <div className="w-5 h-5 bg-gray-300 rounded animate-pulse"></div>
+                        <div className="h-6 sm:h-7 bg-gray-300 rounded w-32 sm:w-40 animate-pulse"></div>
+                      </div>
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+                        <div className="flex items-center gap-1">
+                          <div className="w-4 h-4 bg-gray-300 rounded animate-pulse"></div>
+                          <div className="h-4 bg-gray-300 rounded w-24 animate-pulse"></div>
+                        </div>
+                        <div className="h-5 sm:h-6 bg-gray-300 rounded w-20 animate-pulse"></div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="h-8 bg-gray-300 rounded w-20 animate-pulse"></div>
+                      <div className="h-8 bg-gray-300 rounded w-8 animate-pulse"></div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Order Items Skeleton */}
+                <div className="p-4 sm:p-6">
+                  <div className="space-y-4">
+                    {[1, 2, 3].map(itemIndex => (
+                      <div key={itemIndex} className="flex gap-4 p-3 bg-gray-50 rounded-lg">
+                        <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gray-300 rounded-lg animate-pulse flex-shrink-0"></div>
+                        <div className="flex-1">
+                          <div className="h-5 bg-gray-300 rounded mb-2 w-3/4 animate-pulse"></div>
+                          <div className="h-4 bg-gray-300 rounded mb-1 w-1/2 animate-pulse"></div>
+                          <div className="h-4 bg-gray-300 rounded w-1/3 animate-pulse"></div>
+                        </div>
+                        <div className="text-right">
+                          <div className="h-5 bg-gray-300 rounded mb-2 w-16 animate-pulse"></div>
+                          <div className="h-4 bg-gray-300 rounded w-12 animate-pulse"></div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Order Summary Skeleton */}
+                  <div className="mt-6 pt-4 border-t border-gray-200">
+                    <div className="flex justify-between items-center">
+                      <div className="space-y-2">
+                        <div className="h-4 bg-gray-300 rounded w-24 animate-pulse"></div>
+                        <div className="h-4 bg-gray-300 rounded w-20 animate-pulse"></div>
+                        <div className="h-4 bg-gray-300 rounded w-28 animate-pulse"></div>
+                      </div>
+                      <div className="text-right space-y-2">
+                        <div className="h-4 bg-gray-300 rounded w-16 animate-pulse"></div>
+                        <div className="h-4 bg-gray-300 rounded w-12 animate-pulse"></div>
+                        <div className="h-5 bg-gray-300 rounded w-20 animate-pulse"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Action Buttons Skeleton */}
+                  <div className="mt-6 flex gap-3">
+                    <div className="h-10 bg-gray-300 rounded w-24 animate-pulse"></div>
+                    <div className="h-10 bg-gray-300 rounded w-28 animate-pulse"></div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     );

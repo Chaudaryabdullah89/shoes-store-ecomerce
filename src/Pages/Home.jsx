@@ -6,7 +6,7 @@ import "./Style.css";
 import { Navigation, Pagination } from "swiper/modules";
 import { Link } from "react-router-dom";
 import { useCart } from "../Context/CartContext";
-import { useWishlist } from "../Context/WishlistContext";
+import { useWishlist } from "../Context/WishlistContextProvider";
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import { useProductContext } from '../Context/ProductContextProvider';
@@ -14,7 +14,7 @@ import FindRetailer from '../Components/FindRetailer';
 import Footer from '../Components/Footer';
 import QuickView from "../Components/QuickView";
 import ProductCard from "../Components/ProductCard";
-import axios from 'axios';
+import api from '../services/api';
 
 const Home = () => {
   const [_, setLoading] = useState(true); // keep setLoading for blog fetch
@@ -26,17 +26,20 @@ const Home = () => {
   const [quickCartProductId, setQuickCartProductId] = useState(null);
   const { addToCart } = useCart();
   const { addToWishlist } = useWishlist();
-  const { products, loading: productLoading } = useProductContext();
+  const { products, loading: productLoading, error: productError } = useProductContext();
   const [blogPosts, setBlogPosts] = useState([]);
 
   useEffect(() => {
-    // Fetch blogs from backend
-    axios.get('/api/blogs')
+    // Fetch blogs from backend using configured API service
+    api.get('/blogs')
       .then(res => {
         const blogs = Array.isArray(res.data.blogs) ? res.data.blogs : (Array.isArray(res.data) ? res.data : []);
         setBlogPosts(blogs);
       })
-      .catch(() => setBlogPosts([]))
+      .catch((error) => {
+        console.error('Failed to fetch blogs:', error);
+        setBlogPosts([]);
+      })
       .finally(() => setLoading(false));
   }, []);
   
@@ -45,7 +48,26 @@ const Home = () => {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading...</p>
+          <p className="text-gray-600">Loading products...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error state if products failed to load
+  if (productError) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-6xl mb-4">⚠️</div>
+          <h2 className="text-2xl font-bold mb-2">Something went wrong</h2>
+          <p className="text-gray-600 mb-4">Failed to load products. Please try refreshing the page.</p>
+          <button 
+            onClick={() => window.location.reload()} 
+            className="bg-black text-white px-6 py-2 rounded-lg hover:bg-gray-800 transition-colors"
+          >
+            Refresh Page
+          </button>
         </div>
       </div>
     );
@@ -409,9 +431,18 @@ const Home = () => {
         >
           <div className="relative w-full h-48 sm:h-52 lg:h-56 overflow-hidden">
             <img
-              src={post.image.url}
+              src={
+                post.image?.url ||
+                post.image ||
+                'https://via.placeholder.com/600x300?text=No+Image'
+              }
               alt={post.title}
               className="w-full h-full object-cover object-center transition-transform duration-300 hover:scale-105"
+              loading="lazy"
+              onError={e => {
+                e.target.onerror = null;
+                e.target.src = 'https://via.placeholder.com/600x300?text=No+Image';
+              }}
             />
             {post.featured && (
               <div className="absolute top-2 left-2 bg-yellow-400 text-yellow-900 px-2 py-1 rounded-full text-xs font-bold">
@@ -461,9 +492,18 @@ const Home = () => {
             >
               <div className="relative w-full h-40 overflow-hidden">
                 <img
-                  src={post.image.url}
+                  src={
+                    post.image?.url ||
+                    post.image ||
+                    'https://via.placeholder.com/600x300?text=No+Image'
+                  }
                   alt={post.title}
                   className="w-full h-full object-cover object-center transition-transform duration-300 hover:scale-105"
+                  loading="lazy"
+                  onError={e => {
+                    e.target.onerror = null;
+                    e.target.src = 'https://via.placeholder.com/600x300?text=No+Image';
+                  }}
                 />
                 {post.featured && (
                   <div className="absolute top-2 left-2 bg-yellow-400 text-yellow-900 px-2 py-0.5 rounded-full text-xs font-bold">
