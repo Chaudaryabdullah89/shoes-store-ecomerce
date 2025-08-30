@@ -52,39 +52,6 @@ A modern, full-featured e-commerce web application for a shoe store, built with 
 
 ---
 
-## 🚀 Getting Started
-
-### 1. Clone the Repo
-
-```bash
-git clone https://github.com/Chaudaryabdullah89/shoes-store-ecomerce.git
-cd shoes-store-ecomerce
-```
-
-### 2. Install Dependencies
-
-```bash
-npm install
-```
-
-### 3. Set Environment Variables
-
-Create a `.env` file and set your API endpoints and Stripe key:
-
-```
-VITE_API_BASE_URL=https://your-api-url
-VITE_STRIPE_PUBLISHABLE_KEY=your_stripe_key
-```
-
-### 4. Run the App
-
-```bash
-npm run dev
-```
-
-Visit [http://localhost:3000](http://localhost:3000)
-
----
 
 ## 📂 Project Structure
 
@@ -101,17 +68,7 @@ src/
 
 ---
 
-## 🤝 Contributing
 
-Contributions are welcome! Please open an issue or submit a pull request.
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License.
-
----
 
 ## 🙏 Acknowledgements
 
