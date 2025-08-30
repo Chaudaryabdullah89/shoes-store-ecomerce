@@ -1,13 +1,125 @@
-# React + Vite
+# 👟 Shoes Store E-commerce
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, full-featured e-commerce web application for a shoe store, built with **React** and **Vite**. This project delivers a complete online shopping experience with a fast, responsive UI, advanced cart/wishlist management, secure authentication, and a robust admin panel.
 
-Currently, two official plugins are available:
+[Live Demo](https://shoes-store-six-sigma.vercel.app)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## Expanding the ESLint configuration
+## ✨ Features
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
-"# shoes-store" 
+- **User Authentication & Profile**
+  - Register, login, logout, email verification & password reset
+  - Update profile, manage addresses, payment methods, and preferences
+
+- **Product Catalog**
+  - Browse shoes by category, brand, features (new, sale, featured)
+  - Product detail pages with images, sizing, and pricing
+  - Search and filter products
+
+- **Wishlist**
+  - Add/remove products to your wishlist
+  - Wishlist persists for guests (localStorage) and logged-in users (server-side)
+
+- **Cart & Checkout**
+  - Add, update, or remove products in the cart
+  - Apply coupons and discounts
+  - Secure, multi-step checkout with Stripe and Cash on Delivery support
+
+- **Order Management**
+  - Track your orders and order history
+  - Cancel orders and request refunds
+
+- **Admin Dashboard**
+  - Product CRUD (create, update, delete products)
+  - User management (view/update/delete users)
+  - Order management and store settings
+
+- **Responsive Design**
+  - Mobile-first, optimized for all devices
+
+---
+
+## 🛠️ Tech Stack
+
+- **Frontend:** React, Vite, React Router, Context API
+- **UI:** TailwindCSS, React Hot Toast
+- **Authentication:** JWT, localStorage
+- **APIs:** RESTful endpoints for products, users, cart, checkout, orders
+- **Payments:** Stripe integration
+- **State Management:** React Context, useReducer, useState
+- **Admin:** Custom admin panel for managing products, users, and orders
+
+---
+
+## 🚀 Getting Started
+
+### 1. Clone the Repo
+
+```bash
+git clone https://github.com/Chaudaryabdullah89/shoes-store-ecomerce.git
+cd shoes-store-ecomerce
+```
+
+### 2. Install Dependencies
+
+```bash
+npm install
+```
+
+### 3. Set Environment Variables
+
+Create a `.env` file and set your API endpoints and Stripe key:
+
+```
+VITE_API_BASE_URL=https://your-api-url
+VITE_STRIPE_PUBLISHABLE_KEY=your_stripe_key
+```
+
+### 4. Run the App
+
+```bash
+npm run dev
+```
+
+Visit [http://localhost:3000](http://localhost:3000)
+
+---
+
+## 📂 Project Structure
+
+```
+src/
+│
+├── admin/                # Admin dashboard components
+├── components/           # Reusable UI components
+├── Context/              # React Contexts for global state (cart, wishlist, auth)
+├── Pages/                # Pages for routing (Home, Product, Cart, Checkout, etc.)
+├── services/             # API service modules
+└── App.jsx               # Main app entry point
+```
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please open an issue or submit a pull request.
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+---
+
+## 🙏 Acknowledgements
+
+- [React](https://reactjs.org/)
+- [Vite](https://vitejs.dev/)
+- [Stripe](https://stripe.com/)
+- [TailwindCSS](https://tailwindcss.com/)
+
+---
+
+> Made with ❤️ by [Chaudaryabdullah89](https://github.com/Chaudaryabdullah89)
